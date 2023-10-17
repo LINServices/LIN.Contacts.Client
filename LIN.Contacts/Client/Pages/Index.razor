@@ -26,6 +26,8 @@
 @code
 {
 
+    string Pattern = "";
+
     /// <summary>
     /// Obtiene si los proyectos ya están cargados
     /// </summary>
@@ -41,7 +43,9 @@
     /// <summary>
     /// OLista de proyectos
     /// </summary>
-    public static List<ContactModel> Proyectos { get; set; } = new();
+    public static List<ContactModel> Contactos { get; set; } = new();
+
+    public static List<ContactModel> RenderList { get; set; } = new();
 
 
 }
@@ -86,8 +90,8 @@
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                 </svg>
             </div>
-            <input type="search" id="default-search" class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-pink-500 focus:border-pink-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-pink-500 dark:focus:border-pink-500" placeholder="Buscar personas, teléfonos, correos..." required>
-            <button type="submit" class="text-white absolute right-2.5 bottom-2.5 bg-pink-700 hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800">Buscar</button>
+            <input @bind="Pattern" @oninput="Search" type="search" id="default-search" class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-pink-500 focus:border-pink-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-pink-500 dark:focus:border-pink-500" placeholder="Buscar personas, teléfonos, correos..." required>
+            <button @onclick="Search" type="submit" class="text-white absolute right-2.5 bottom-2.5 bg-pink-700 hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800">Buscar</button>
         </div>
     </div>
 
@@ -114,7 +118,7 @@
         }
         else
         {
-            if (Proyectos.Count == 0)
+            if (RenderList.Count == 0)
             {
                 <div class="flex mb-4 -space-x-4 mt-2">
                     <div class="flex flex-col rounded justify-center items-center border-dashed border-2 border-gray-800 w-full p-4">
@@ -135,7 +139,7 @@
             {
                 <div style="margin-left: 2px" class="relative sm:rounded-lg mt-2 mb-5">
 
-                    @foreach (var project in Proyectos)
+                    @foreach (var project in RenderList)
                     {
                         <ContactComponent OnDelete="LoadProjects" Modelo="project" />
                     }

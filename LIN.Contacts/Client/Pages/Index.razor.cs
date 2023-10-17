@@ -4,7 +4,41 @@
 public partial class Index
 {
 
-    static bool IsDevServerRunnig = false;
+
+
+    public void Search(dynamic e)
+    {
+
+        if (e is Microsoft.AspNetCore.Components.ChangeEventArgs a)
+        {
+            Pattern = a.Value?.ToString() ?? "";
+        }
+        Console.WriteLine(Pattern);
+
+
+        if(Pattern.Trim().Length < 0)
+        {
+            RenderList = Contactos;
+            StateHasChanged();
+            return;
+        }
+
+        string pattern = Pattern.Trim().ToLower();
+
+
+        RenderList = (from C in Contactos
+                      where C.Nombre.ToLower().Contains(pattern)
+                      | C.Mails.Where(T => T.Email.ToLower().Contains(pattern)).Any()
+                      | C.Phones.Where(T => T.Number.ToLower().Contains(pattern)).Any()
+                      select C).ToList();
+
+
+        StateHasChanged() ;
+
+
+    }
+
+
 
     /// <summary>
     /// Informacion de desarrollador
@@ -107,7 +141,8 @@ public partial class Index
         if (result.Response == Responses.Success)
         {
             AreProjectLoaded = true;
-            Proyectos = result.Models;
+            Contactos = result.Models;
+            RenderList = result.Models;
             StateHasChanged();
         }
 
