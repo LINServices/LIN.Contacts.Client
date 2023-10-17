@@ -1,0 +1,129 @@
+﻿ <!-- Propiedades -->
+@page "/"
+
+<!-- Dependencias -->
+@inject IJSRuntime JSRuntime
+@inject NavigationManager nav
+
+
+<!-- Estilos -->
+<link href="./css/Index.css" rel="stylesheet" />
+<style>
+    .imgS {
+        padding-top: 27%;
+    }
+
+    .texto-ss {
+        font-size: 2vh;
+    }
+</style>
+
+@{
+    Me = this;
+}
+
+<!-- Variables Estaticas -->
+@code
+{
+
+    /// <summary>
+    /// Obtiene si los proyectos ya estan cargados
+    /// </summary>
+    public static Index Me { get; set; }
+
+
+    /// <summary>
+    /// Obtiene si los proyectos ya estan cargados
+    /// </summary>
+    public static bool AreProjectLoaded { get; set; }
+
+
+    /// <summary>
+    /// OLista de proyectos
+    /// </summary>
+    public static List<ContactModel> Proyectos { get; set; } = new();
+
+
+}
+
+
+<!-- Cabezeras -->
+<NavBar Tablero="true" />
+
+
+
+
+
+
+
+
+
+<div class="layoutMain">
+
+
+
+    @if (LIN.Access.Contacts.Session.Instance.Account.Genero == Genders.Female)
+    {
+        <h1 class="gilroy-bold" style="font-size: 35px">Bienvenida a LIN</h1>
+    }
+    else
+    {
+        <h1 class="gilroy-bold" style="font-size: 35px">Bienvenido a LIN</h1>
+    }
+
+
+
+   
+        <h5 class="gilroy" style="font-size: 15px">@Saludo(LIN.Access.Contacts.Session.Instance.Account.Nombre.Split(" ")[0]), ¿Que quieres hacer hoy?</h5>
+    
+   
+
+        <div class="flex mt-4">
+                <MiniButton Src="./img/add.png" HexColor="#475569" OnClick="A" />
+                <MiniButton Src="./img/delete.png" HexColor="#22c55e" OnClick="GoToTrans" />
+            
+           
+        </div>
+
+
+
+        <div class="mt-6">
+
+            <label @onclick="LoadProjects" style="font-size: 18px;" class="gilroy-bold mb-3">Contactos</label>
+            @if (!AreProjectLoaded)
+            {
+                <div class="flex items-center justify-center h-44 h-9 w-full rounded-lg">
+                    <CircleLoader />
+                </div>
+            }
+            else
+            {
+                if (Proyectos.Count == 0)
+                {
+                    <div style="box-shadow: rgba(0, 0, 0, 0.02) 0px 4px 12px;" class="flex items-center justify-center mt-7 bg-white h-44 w-full rounded-lg">
+                        <img class="h-6 w-6" src="./img/cactus.png" />
+                        <label @onclick="LoadProjects" class="gilroy-bold ml-1">No tienes ningún contacto</label>
+                    </div>
+                }
+                else
+                {
+                    <div style="margin-left: 2px" class="relative sm:rounded-lg mt-2 mb-5">
+
+                        @foreach (var project in Proyectos)
+                        {
+                            <ContactComponent OnDelete="LoadProjects" Modelo="project" />
+                        }
+
+                    </div>
+                }
+            }
+
+        </div>
+ 
+</div>
+
+
+<DrawerProject OnSuccessCreate="OnSucces" />
+
+<ProfileCreateModal OnSuccessCreate="CrearProfileSuccess" />
+
