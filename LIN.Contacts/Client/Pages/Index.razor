@@ -22,18 +22,18 @@
     Me = this;
 }
 
-<!-- Variables Estaticas -->
+<!-- Variables Estáticas -->
 @code
 {
 
     /// <summary>
-    /// Obtiene si los proyectos ya estan cargados
+    /// Obtiene si los proyectos ya están cargados
     /// </summary>
     public static Index Me { get; set; }
 
 
     /// <summary>
-    /// Obtiene si los proyectos ya estan cargados
+    /// Obtiene si los proyectos ya están cargados
     /// </summary>
     public static bool AreProjectLoaded { get; set; }
 
@@ -94,10 +94,10 @@
 
 
     <div class="flex mt-4">
-        <MiniButton Src="./img/add.png" HexColor="#475569" OnClick="A" />
-        <MiniButton Src="./img/devices.png" HexColor="#475569" OnClick="A" />
-        <MiniButton Src="./img/delete.png" HexColor="#22c55e" OnClick="GoToTrans" />
 
+        <MiniButton Src="./img/add.png" HexColor="#475569" OnClick="A" />
+        <MiniButton Src="./img/devices.png" HexColor="#475569" OnClick="A2" />
+        <MiniButton Src="./img/delete.png" HexColor="#22c55e" OnClick="GoToTrans" />
 
     </div>
 
@@ -150,5 +150,6 @@
 
 
 <DrawerProject OnSuccessCreate="OnSucces" />
+<DrawerSync OnSuccessCreate="OnSucces" />
 
 

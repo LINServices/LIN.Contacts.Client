@@ -52,18 +52,50 @@
 
             <h1 style="margin-top: -5px" class="gilroy-bold">@Modelo.Nombre</h1>
 
-            @if(Modelo.Mails.Count <= 0 && Modelo.Phones.Count <=0)
-            {
-                <label class="text-sm -mt-1">Sin datos de contacto</label>
-            }
-            else if (Modelo.Mails.Count <= 0)
-            {
-                <label class="text-sm -mt-1">@Modelo.Phones[0].Number</label>
-            }
-            else
-            {
-                <label class="text-sm -mt-1">@Modelo.Mails[0].Email</label>
-            }
+            <div class="flex items-center justify-center gap-1">
+
+                @if(Modelo.Type == Types.Contacts.Enumerations.ContactTypes.Work)
+                {
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-briefcase-fill fill-gray-700 hover:fill-green-700" viewBox="0 0 16 16">
+                        <path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v1.384l7.614 2.03a1.5 1.5 0 0 0 .772 0L16 5.884V4.5A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1h-3zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5z" />
+                        <path d="M0 12.5A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5V6.85L8.129 8.947a.5.5 0 0 1-.258 0L0 6.85v5.65z" />
+                    </svg>
+                }
+                else if (Modelo.Type == Types.Contacts.Enumerations.ContactTypes.Family)
+                {
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-house-heart-fill fill-gray-700 hover:fill-red-700" viewBox="0 0 16 16">
+                        <path d="M7.293 1.5a1 1 0 0 1 1.414 0L11 3.793V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v3.293l2.354 2.353a.5.5 0 0 1-.708.707L8 2.207 1.354 8.853a.5.5 0 1 1-.708-.707L7.293 1.5Z" />
+                        <path d="m14 9.293-6-6-6 6V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V9.293Zm-6-.811c1.664-1.673 5.825 1.254 0 5.018-5.825-3.764-1.664-6.691 0-5.018Z" />
+                    </svg>
+                }
+                else if (Modelo.Type == Types.Contacts.Enumerations.ContactTypes.Study)
+                {
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-backpack3-fill fill-gray-700 hover:fill-orange-500" viewBox="0 0 16 16">
+                        <path d="M5 10v3h6v-3h-1v.5a.5.5 0 0 1-1 0V10H5Z" />
+                        <path d="M6 2v.341a5.978 5.978 0 0 0-1.308.653l-.416-1.247a1 1 0 0 0-1.749-.284l-.77 1.027a1 1 0 0 0-.149.917l.803 2.407A5.985 5.985 0 0 0 2 8v5.5A2.5 2.5 0 0 0 4.5 16h7a2.5 2.5 0 0 0 2.5-2.5V8c0-.771-.146-1.509-.41-2.186l.801-2.407a1 1 0 0 0-.148-.917l-.77-1.027a1 1 0 0 0-1.75.284l-.415 1.247A5.976 5.976 0 0 0 10 2.34V2a2 2 0 1 0-4 0Zm1 0a1 1 0 0 1 2 0v.083a6.04 6.04 0 0 0-2 0V2Zm5.941 2.595a6.036 6.036 0 0 0-.8-.937l.531-1.595.77 1.027-.5 1.505ZM3.86 3.658a6.031 6.031 0 0 0-.8.937L2.557 3.09l.77-1.027.532 1.595Zm.18 3.772a4 4 0 0 1 7.92 0 .5.5 0 1 1-.99.142 3 3 0 0 0-5.94 0 .5.5 0 1 1-.99-.142ZM4 9.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-4Z" />
+                    </svg>
+                }
+                else if (Modelo.Type == Types.Contacts.Enumerations.ContactTypes.Provider)
+                {
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-basket3-fill fill-gray-700 hover:fill-indigo-600" viewBox="0 0 16 16">
+                        <path d="M5.757 1.071a.5.5 0 0 1 .172.686L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H.5a.5.5 0 0 1-.5-.5v-1A.5.5 0 0 1 .5 6h1.717L5.07 1.243a.5.5 0 0 1 .686-.172zM2.468 15.426.943 9h14.114l-1.525 6.426a.75.75 0 0 1-.729.574H3.197a.75.75 0 0 1-.73-.574z" />
+                    </svg>
+                }
+
+                @if (Modelo.Mails.Count <= 0 && Modelo.Phones.Count <= 0)
+                {
+                    <label class="text-sm">Sin datos de contacto</label>
+                }
+                else if (Modelo.Mails.Count <= 0)
+                {
+                    <label class="text-sm ">@Modelo.Phones[0].Number</label>
+                }
+                else
+                {
+                    <label class="text-sm">@Modelo.Mails[0].Email</label>
+                }
+            </div>
+           
 
           
         </div>

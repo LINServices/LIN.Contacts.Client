@@ -11,6 +11,7 @@
     public string Name { get; set; } = "";
     public string Mail { get; set; } = "";
     public string Phone { get; set; } = "";
+    public string TypeContact { get; set; } = "0";
 }
 
 
@@ -53,10 +54,18 @@
             <input @bind="Phone" autocomplete="off" type="text" id="title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-pink-500 focus:border-pink-500 block w-full p-2.5      " placeholder="Numero telefonico" required>
         </div>
 
-    
+        <div class="mb-6">
+        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tipo de contacto</label>
+            <select @bind="TypeContact" id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-pink-500 focus:border-pink-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-pink-500 dark:focus:border-pink-500">
+            <option value="0" selected>Ninguno</option>
+            <option value="1">Trabajo</option>
+            <option value="2">Estudio</option>
+            <option value="3">Proveedor</option>
+            <option value="4">Familia</option>
+        </select>
+        </div>
 
-
-        <button id="btnClose1" @onclick="Crear" class="text-white justify-center flex items-center bg-[#050708] hover:bg-[#050708]/90 w-full focus:ring-4 focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 ">
+        <button id="btnClose1" @onclick="Crear" class="text-white justify-center flex items-center bg-pink-500 hover:bg-pink-700 w-full focus:ring-4 focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 ">
             <svg style="margin-right: 6px" xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
             </svg>
@@ -81,6 +90,7 @@
                     Email = Mail
                 }
             },
+                Type = (Types.Contacts.Enumerations.ContactTypes)int.Parse(TypeContact),
                 Nombre = Name,
                 Phones = new()
             {
@@ -96,10 +106,10 @@
             await OnSuccessCreate.InvokeAsync();
         }
 
-
         Name = "";
         Phone = "";
         Mail = "";
+        TypeContact = "0";
         StateHasChanged();
 
     }

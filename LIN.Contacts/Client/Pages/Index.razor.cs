@@ -53,10 +53,21 @@ public partial class Index
 
 
 
+
     private async Task A()
     {
 
         await JSRuntime.InvokeAsync<object>("ShowDrawer", "drawerProject", "btnClose", "btnClose1");
+
+        StateHasChanged();
+
+    }
+
+
+    private async Task A2()
+    {
+
+        await JSRuntime.InvokeAsync<object>("ShowDrawer", "drawerSync", "btnSyncClose");
 
         StateHasChanged();
 
