@@ -8,7 +8,9 @@
     public EventCallback<MouseEventArgs> OnSuccessCreate { get; set; }
 
 
-    public string ProjectName { get; set; } = "";
+    public string Name { get; set; } = "";
+    public string Mail { get; set; } = "";
+    public string Phone { get; set; } = "";
 }
 
 
@@ -25,7 +27,7 @@
             <path d="M0 6a6 6 0 1 1 12 0A6 6 0 0 1 0 6z" />
             <path d="M12.93 5h1.57a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5v-1.57a6.953 6.953 0 0 1-1-.22v1.79A1.5 1.5 0 0 0 5.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 4h-1.79c.097.324.17.658.22 1z" />
         </svg>
-        Nuevo proyecto
+        Nuevo Contacto
     </h5>
 
 
@@ -38,19 +40,27 @@
 
         <div class="mb-6">
             <label for="title" class="block mb-2 text-sm font-medium text-gray-900 ">Nombre</label>
-            <input @bind="ProjectName" autocomplete="off" type="text" id="title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5      " placeholder="Nombre del proyecto" required>
-        </div>
+            <input @bind="Name" autocomplete="off" type="text" id="title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-pink-500 focus:border-pink-500 block w-full p-2.5      " placeholder="Nombre del contacto" required>
+        </div> 
+
         <div class="mb-6">
-            <label for="description" class="block mb-2 text-sm font-medium text-gray-900 ">Descripcion</label>
-            <textarea id="description" autocomplete="off" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500      " placeholder="Una"></textarea>
+            <label for="title" class="block mb-2 text-sm font-medium text-gray-900 ">Correo</label>
+            <input @bind="Mail" autocomplete="off" type="text" id="title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-pink-500 focus:border-pink-500 block w-full p-2.5      " placeholder="Correo electrónico" required>
+        </div> 
+        
+        <div class="mb-6">
+            <label for="title" class="block mb-2 text-sm font-medium text-gray-900 ">Teléfono</label>
+            <input @bind="Phone" autocomplete="off" type="text" id="title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-pink-500 focus:border-pink-500 block w-full p-2.5      " placeholder="Numero telefonico" required>
         </div>
 
+    
 
-        <button id="btnClose1" @onclick="Crear" class="text-white justify-center flex items-center bg-[#050708] hover:bg-[#050708]/90 w-full focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 ">
+
+        <button id="btnClose1" @onclick="Crear" class="text-white justify-center flex items-center bg-[#050708] hover:bg-[#050708]/90 w-full focus:ring-4 focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 ">
             <svg style="margin-right: 6px" xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
             </svg>
-            Crear Proyecto
+            Crear Contacto
         </button>
     </div>
 </div>
@@ -62,9 +72,35 @@
     async void Crear()
     {
 
+        var create = await LIN.Access.Contacts.Controllers.Contacts.Create(LIN.Access.Contacts.Session.Instance.Token, new()
+            {
+                Mails = new()
+            {
+                new()
+                {
+                    Email = Mail
+                }
+            },
+                Nombre = Name,
+                Phones = new()
+            {
+                new()
+                {
+                    Number = Phone
+                }
+            }
+            });
 
-        
+        if (create.Response == Responses.Success)
+        {
+            await OnSuccessCreate.InvokeAsync();
+        }
 
+
+        Name = "";
+        Phone = "";
+        Mail = "";
+        StateHasChanged();
 
     }
 }
