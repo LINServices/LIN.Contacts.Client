@@ -26,6 +26,8 @@
 @code
 {
 
+
+    Emma EmmaIA { get; set; }
     string Pattern = "";
 
     /// <summary>
@@ -48,6 +50,10 @@
     public static List<ContactModel> RenderList { get; set; } = new();
 
 
+    void RunEmma()
+    {
+        EmmaIA.Show();
+    }
 }
 
 
@@ -56,6 +62,7 @@
 
 
 
+<Emma @ref=EmmaIA></Emma>
 
 
 
@@ -102,6 +109,7 @@
         <MiniButton Src="./img/add.png" HexColor="#475569" OnClick="A" />
         <MiniButton Src="./img/devices.png" HexColor="#475569" OnClick="A2" />
         <MiniButton Src="./img/delete.png" HexColor="#22c55e" OnClick="GoToTrans" />
+        <MiniButton Src="./arroba.png" HexColor="#22c55e" OnClick="RunEmma" />
 
     </div>
 
@@ -155,5 +163,4 @@
 
 <DrawerProject OnSuccessCreate="OnSucces" />
 <DrawerSync OnSuccessCreate="OnSucces" />
-
 
