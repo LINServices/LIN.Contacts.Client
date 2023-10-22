@@ -54,15 +54,15 @@
         StateHasChanged();
 
         var s = await LIN.Access.Contacts.Controllers.Profiles.ToEmma(Prompt, LIN.Access.Contacts.Session.Instance.Token);
-        Console.WriteLine(s.Model.Result);
+        Console.WriteLine(s.Model.Content);
 
 
         ActualState = State.Witting;
 
         // Es un comando
-        if (s.Model.Result.StartsWith("#"))
+        if (s.Model.Content.StartsWith("#"))
         {
-            var app = new SILF.Script.App(s.Model.Result.Remove(0, 1));
+            var app = new SILF.Script.App(s.Model.Content.Remove(0, 1));
             app.AddDefaultFunctions(Online.Scripts.Actions);
             app.Run();
             EmmaResponde = "Perfecto";
@@ -70,11 +70,11 @@
             return;
         }
 
-        EmmaResponde = s.Model.Result;
+        EmmaResponde = s.Model.Content;
         // Hablar
         StateHasChanged();
 
-        await js.InvokeVoidAsync("Speach", s.Model.Result);
+        await js.InvokeVoidAsync("Speach", s.Model.Content);
     }
 
 
