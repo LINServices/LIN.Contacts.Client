@@ -75,11 +75,11 @@
 
     @if (LIN.Access.Contacts.Session.Instance.Account.Genero == Genders.Female)
     {
-        <h1 class="gilroy-bold" style="font-size: 35px">Bienvenida a LIN</h1>
+        <h1 class="font-bold" style="font-size: 35px">Bienvenida a LIN</h1>
     }
     else
     {
-        <h1 class="gilroy-bold" style="font-size: 35px">Bienvenido a LIN</h1>
+        <h1 class="font-bold" style="font-size: 35px">Bienvenido a LIN</h1>
     }
 
 
@@ -117,7 +117,7 @@
 
     <div class="mt-6">
 
-        <label @onclick="LoadProjects" style="font-size: 18px;" class="gilroy-bold mb-3">Contactos</label>
+        <label @onclick="LoadProjects" style="font-size: 18px;" class="font-bold mb-3">Contactos</label>
         @if (!AreProjectLoaded)
         {
             <div class="flex items-center justify-center h-44 h-9 w-full rounded-lg">
