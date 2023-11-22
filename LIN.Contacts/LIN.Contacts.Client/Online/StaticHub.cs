@@ -41,8 +41,6 @@ public class StaticHub
                 Name = "Web",
                 Cuenta = Access.Contacts.Session.Instance.Account.ID,
                 Modelo = "Dispositivo web",
-                BateryConected = MainLayout.IsChargin,
-                BateryLevel = MainLayout.LevelBattery,
                 Manufacter = "WEB",
                 OsVersion = "Navegador",
                 Platform = Platforms.Web,
