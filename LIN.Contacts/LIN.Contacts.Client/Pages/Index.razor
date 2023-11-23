@@ -71,9 +71,12 @@
     protected override void OnInitialized()
     {
 
-       
+
         base.OnInitialized();
     }
+
+
+    public ContactModal ModalContactos { get; set; }
 }
 
 
@@ -84,6 +87,8 @@
 
 <Emma @ref=EmmaIA></Emma>
 
+
+<ContactModal @ref="ModalContactos"></ContactModal>
 
 
 
@@ -126,10 +131,10 @@
 
     <div class="flex mt-4">
 
-        <MiniButton Src="./img/add.png" HexColor="#475569" OnClick="A" />
-        <MiniButton Src="./img/devices.png" HexColor="#475569" OnClick="A2" />
-        <MiniButton Src="./img/delete.png" HexColor="#22c55e" OnClick="GoToTrans" />
-        <MiniButton Src="./arroba.png" HexColor="#22c55e" OnClick="RunEmma" />
+        <ActionButton Src="./img/add.png" HexColor="#475569" OnClick="A" />
+        <ActionButton Src="./img/devices.png" HexColor="#475569" OnClick="A2" />
+        <ActionButton Src="./img/delete.png" HexColor="#22c55e" OnClick="GoToTrans" />
+        <ActionButton Src="./arroba.png" HexColor="#22c55e" OnClick="RunEmma" />
 
     </div>
 
@@ -169,7 +174,7 @@
 
                     @foreach (var project in RenderList)
                     {
-                        <ContactComponent OnDelete="LoadProjects" Modelo="project" />
+                        <ContactComponent OnDelete="LoadProjects" Modelo="project" Modal="ModalContactos" />
                     }
 
                 </div>

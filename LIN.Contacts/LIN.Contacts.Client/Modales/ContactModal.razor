@@ -1,0 +1,76 @@
+﻿@inject IJSRuntime Js
+
+
+@code {
+
+
+
+    private string Key { get; init; } = Guid.NewGuid().ToString();
+
+
+    public LIN.Types.Contacts.Models.ContactModel? Modelo { get; set; } 
+
+
+    public void Show()
+    {
+        StateHasChanged();
+        Js.InvokeVoidAsync("ShowModal", $"modal-{Key}", $"btn-{Key}");
+    }
+
+
+}
+
+
+@if(Modelo != null)
+{
+    
+
+<div id="modal-@Key" tabindex="-1" class="fixed top-0 left-0 right-0 z-50 hidden p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow">
+            <button id="btn-@Key" type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="p-6 text-center">
+
+                <div class="flex flex-col justify-center items-center">
+                        <div class="relative inline-flex items-center justify-center w-14 h-14 overflow-hidden bg-gray-100 rounded-full">
+                            <span class="font-medium text-gray-600">A</span>
+                        </div>
+
+                        <label class="font-bold text-2xl">@Modelo.Nombre</label>
+                        <label>@Modelo.Type</label>
+
+                        @if(Modelo.Birthday != default)
+                        {
+                             <label>@Modelo.Birthday</label>
+                        }
+                       
+                        
+
+                        @foreach (var e in Modelo.Mails)
+                        {
+                            <div class="flex bg-zinc-200 rounded p-2 justify-center items-center mt-1">
+                                <img class="h-4 w-4 mr-2" src="./img/email.png"/>
+                                <label>@e.Email</label>
+                            </div>
+                        }
+                        @foreach (var e in Modelo.Phones)
+                        {
+                            <div class="flex bg-zinc-200 rounded p-2 justify-center items-center mt-1">
+                                <img class="h-4 w-4 mr-2" src="./img/phone.png" />
+                                <label>@e.Number</label>
+                            </div>
+                        }
+                </div>
+                  
+            
+               
+
+            </div>
+        </div>
+    </div>
+</div>
+
+               }

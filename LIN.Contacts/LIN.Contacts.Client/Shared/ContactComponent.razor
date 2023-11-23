@@ -10,6 +10,11 @@
     [Parameter]
     public EventCallback<MouseEventArgs> OnDelete { get; set; }
 
+
+    [Parameter]
+    public ContactModal Modal { get; set; }
+
+
     string Message = "";
 
     private string state = "";
@@ -38,7 +43,7 @@
 
 
 
-<div @onclick="GotoProj" style="padding: 15px;" class="horizontal gilroy mt-2 ring-2 hover:ring-pink-500 ring-gray-200 rounded-lg">
+<div @onclick="GotoProj" style="padding: 15px;" class="horizontal mt-2 ring-2 hover:ring-pink-500 ring-gray-200 rounded-lg">
 
     <div class="flex flex-row items-center">
 
@@ -171,7 +176,8 @@
 
     void GotoProj()
     {
-
+        Modal.Modelo = Modelo;
+        Modal.Show();
     }
 
 
