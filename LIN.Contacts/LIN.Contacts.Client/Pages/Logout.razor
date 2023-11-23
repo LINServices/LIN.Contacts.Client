@@ -1,8 +1,6 @@
 ﻿@page "/logout"
 @inject NavigationManager nav
-
-
-@inject Blazored.LocalStorage.ILocalStorageService localStorage;
+@rendermode InteractiveWebAssembly
 
 <div class="flex items-center justify-center h-screen">
     <CircleLoader />
@@ -10,17 +8,16 @@
 
 
 @code{
-
-    protected async override void OnInitialized()
+    protected override async void OnAfterRender(bool firstRender)
     {
         LIN.Access.Contacts.Session.CloseSession();
         Online.StaticHub.Leave();
         Index.AreProjectLoaded = false;
         Index.Contactos = new();
-        await localStorage.ClearAsync();
         await Task.Delay(1000);
         nav.NavigateTo("/login");
-        base.OnInitialized();
+        base.OnAfterRender(firstRender);
     }
+
   
 }

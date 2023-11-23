@@ -4,7 +4,20 @@
 <!-- Dependencias -->
 @inject IJSRuntime JSRuntime
 @inject NavigationManager nav
+@rendermode InteractiveWebAssembly
 
+@if (!Access.Contacts.Session.IsOpen)
+{
+    <div class="flex justify-center items-center h-screen w-full">
+        <CircleLoader />
+    </div>
+
+    Task.Run(async () =>
+    {
+        nav.NavigateTo("/login");
+    });
+    return;
+}
 
 <!-- Estilos -->
 <link href="./css/Index.css" rel="stylesheet" />
@@ -53,6 +66,13 @@
     void RunEmma()
     {
         EmmaIA.Show();
+    }
+
+    protected override void OnInitialized()
+    {
+
+       
+        base.OnInitialized();
     }
 }
 

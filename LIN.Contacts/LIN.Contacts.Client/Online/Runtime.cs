@@ -20,16 +20,16 @@ internal class Scripts
         public List<Parameter> Parameters { get; set; } = new();
 
 
-        Action<List<ParameterValue>> Action;
+        Action<List<SILF.Script.Elements.ParameterValue>> Action;
 
-        public SILFFunction(Action<List<ParameterValue>> action)
+        public SILFFunction(Action<List<SILF.Script.Elements.ParameterValue>> action)
         {
             Action = action;
         }
 
 
 
-        public FuncContext Run(Instance instance, List<ParameterValue> values)
+        public FuncContext Run(Instance instance, List<SILF.Script.Elements.ParameterValue> values)
         {
             Action.Invoke(values);
             return new();

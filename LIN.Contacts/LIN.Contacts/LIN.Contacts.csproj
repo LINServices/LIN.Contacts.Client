@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\arroba.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\LIN.Contacts.Client\LIN.Contacts.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0" />
   </ItemGroup>

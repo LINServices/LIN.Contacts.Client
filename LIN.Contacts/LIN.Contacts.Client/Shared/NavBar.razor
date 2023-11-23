@@ -1,5 +1,6 @@
 ﻿@inject IJSRuntime js
 @inject NavigationManager nav
+@rendermode InteractiveWebAssembly
 
 
 @code
@@ -9,7 +10,6 @@
     private string User = LIN.Access.Contacts.Session.Instance.Account.Usuario;
 
     private string Name = LIN.Access.Contacts.Session.Instance.Account.Nombre;
-
 
   
 
@@ -52,7 +52,7 @@
 
     if (!LIN.Access.Contacts.Session.IsAccountOpen)
     {
-        nav.NavigateTo("/login");
+       // nav.NavigateTo("/login");
     }
 
 }

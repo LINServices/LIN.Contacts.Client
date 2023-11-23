@@ -3,7 +3,6 @@
 <PageTitle>Nueva cuenta</PageTitle>
 
 @inject NavigationManager nav;
-@inject Blazored.LocalStorage.ILocalStorageService localStorage;
 
 
 
@@ -280,7 +279,6 @@
         if (response.Response == Responses.Success)
         {
             nav.NavigateTo("/");
-            await localStorage.SetItemAsync("token", res.Token);
             Online.StaticHub.LoadHub();
         }
         else

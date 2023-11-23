@@ -61,25 +61,15 @@ public partial class Index
 
     public void GoTo(string url)
     {
-        nav.NavigateTo(url);
-    }
-
-
-    private void GoToDevices()
-    {
-        nav.NavigateTo("/devices");
+        //nav.NavigateTo(url);
     }
 
 
     private void GoToTrans()
     {
-        nav.NavigateTo("/transacciones");
+        //nav.NavigateTo("/transacciones");
     }
 
-    private void GoToIA()
-    {
-        nav.NavigateTo("/ia/playground");
-    }
 
 
 
@@ -151,7 +141,7 @@ public partial class Index
 
     public void GoToSupport()
     {
-        nav.NavigateTo("/contactos");
+       // nav.NavigateTo("/contactos");
     }
 
 
@@ -200,31 +190,6 @@ public partial class Index
         StateHasChanged();
 
     }
-
-
-
-
-    /// <summary>
-    /// Genera el perfil de desarrollador
-    /// </summary>
-    async void CrearProfileSuccess()
-    {
-        await LoadProjects();
-        nav.NavigateTo("/");
-
-    }
-
-
-
-    /// <summary>
-    /// Genera el perfil de desarrollador
-    /// </summary>
-    void PerfilDev()
-    {
-        nav.NavigateTo("/newprofile");
-    }
-
-
 
 
 

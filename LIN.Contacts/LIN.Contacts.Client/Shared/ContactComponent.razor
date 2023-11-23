@@ -146,7 +146,7 @@
 
     async void DeleteAsk()
     {
-       
+
         //await JSRuntime.InvokeVoidAsync("ShowModal", $"ask-delete-modal-{Modelo.Id}", $"ask-close-btn-{Modelo.Id}", $"ask-close-btn2-{Modelo.Id}", $"ask-close-btn3-{Modelo.Id}");
 
     }
@@ -178,6 +178,7 @@
     string GetInitial(string name)
     {
 
+        name = name.Trim();
         string init = "";
 
         while (name.Contains("  "))

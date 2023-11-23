@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="utf-8" />
@@ -8,29 +8,22 @@
     <link rel="stylesheet" href="bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="app.css" />
     <link rel="stylesheet" href="LIN.Contacts.styles.css" />
+    <link rel="stylesheet" href="./css/Tailwind.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
-
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <HeadOutlet @rendermode="@InteractiveWebAssembly" />
+    <HeadOutlet  />
 </head>
 
 <body>
-    <Routes @rendermode="@InteractiveWebAssembly" />
 
-   
-    <script src="./js/battery.js"></script>
-
-    <script src="./js/Blazor.js"></script>
-
-    <script src="https://flowbite.com/docs/flowbite.min.js?v=1.6.5a"></script>
+    <Routes />
+    <script src="_framework/blazor.web.js"></script>
 
     <script src="./js/Flowbite.js"></script>
-    <script src="./js/web.js"></script>
+    <script src="./js/index.js"></script>
     <script src="./js/Voice.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
 
-    <script src="_framework/blazor.web.js"></script>
 </body>
 
 </html>
