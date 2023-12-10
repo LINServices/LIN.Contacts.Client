@@ -242,7 +242,10 @@
         AccountModel modelo = new()
             {
                 Nombre = nombre,
-                Usuario = usuario,
+                Identity = new()
+                {
+                    Unique = usuario
+                } ,
                 Contraseña = contraseña
             };
 
@@ -279,7 +282,7 @@
         if (response.Response == Responses.Success)
         {
             nav.NavigateTo("/");
-            Online.StaticHub.LoadHub();
+            //Online.StaticHub.LoadHub();
         }
         else
         {

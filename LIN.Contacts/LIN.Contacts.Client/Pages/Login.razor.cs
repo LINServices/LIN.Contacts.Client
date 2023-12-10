@@ -112,7 +112,7 @@ public partial class Login
 		if (login.Response == Responses.Success)
 		{
 
-			Online.StaticHub.LoadHub();
+			//Online.StaticHub.LoadHub();
 			nav.NavigateTo("/");
 			return;
 
@@ -215,7 +215,7 @@ public partial class Login
 				if (login.Response == Responses.Success)
 				{
 
-					Online.StaticHub.LoadHub();
+					//Online.StaticHub.LoadHub();
 					nav.NavigateTo("/");
 					return;
 
