@@ -157,6 +157,7 @@ public partial class Login
 	{
 		cancelShow = false;
 		Section = 2;
+
 		// Sin informacion
 		if (User.Length <= 0)
 		{
@@ -167,7 +168,7 @@ public partial class Login
 
 
 		// Suscribir al Hub
-		hub = new LIN.Access.Auth.Hubs.PassKeyHub(User, "Q777Q");
+		hub = new LIN.Access.Auth.Hubs.PassKeyHub(User, "Q777Q", LIN.Access.Auth.SessionAuth.Instance.AccountToken);
 
 		await hub.Suscribe();
 		bool reive = false;

@@ -9,7 +9,7 @@
 
     private string User = LIN.Access.Contacts.Session.Instance.Account.Identity.Unique;
 
-    private string Name = LIN.Access.Contacts.Session.Instance.Account.Nombre;
+    private string Name = LIN.Access.Contacts.Session.Instance.Account.Name;
 
   
 
@@ -41,7 +41,7 @@
     {
         get
         {
-            return Convert.ToBase64String(LIN.Access.Contacts.Session.Instance.Account.Perfil);
+            return Convert.ToBase64String(LIN.Access.Contacts.Session.Instance.Account.Profile);
         }
     }
 
@@ -71,7 +71,7 @@
     <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a href="/" class="flex items-center">
             <img src="./icono.png" class="h-8 mr-3" />
-            <span class="self-center text-1xl font-semibold whitespace-nowrap">LIN Contacts</span>
+            <span class="self-center text-1xl font-semibold whitespace-nowrap text-black">LIN Contacts</span>
         </a>
 
         <div class="flex items-center md:order-2">
@@ -79,22 +79,6 @@
             @if (LIN.Access.Contacts.Session.IsAccountOpen)
             {
 
-                @if (LIN.Access.Contacts.Session.Instance.Account.Rol != AccountRoles.Undefined)
-                {
-                    <div class="h-6 bg-pink-600 rounded-xl mr-3 flex items-center justify-center hover:bg-pink-300">
-
-                        @if (LIN.Access.Contacts.Session.Instance.Account.Rol == AccountRoles.User)
-                        {
-                            <label class="text-xs text-white pl-3 pr-3">Usuario</label>
-                        }
-                        else if (LIN.Access.Contacts.Session.Instance.Account.Rol == AccountRoles.Admin)
-                        {
-                            <label class="text-xs text-white pl-3 pr-3">Administrador</label>
-                        }
-
-                    </div>
-                }
-               
                 <button @onclick="E" type="button" class="flex mr-3 text-sm rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300" id="user-menu-button">
                     <span class="sr-only">Open</span>
                     <img class="w-8 h-8 p-1 rounded-full ring-2 ring-gray-300" src="data:image/png;base64,@Img64">
@@ -129,33 +113,10 @@
 
                         <span class="block text-sm text-gray-500 truncate">@@@User</span>
 
-                        @if (LIN.Access.Contacts.Session.Instance.Account.Insignia == AccountBadges.Verified)
-                        {
-                            <img class="ml-1 self-center" src="./img/verificado.png" style="width: 10px !important; height: 10px !important" />
-                        }
-                        else if (LIN.Access.Contacts.Session.Instance.Account.Insignia == AccountBadges.VerifiedGold)
-                        {
-                            <img class="ml-1 self-center" src="./img/verificadogold.png" style="width: 10px !important; height: 10px !important" />
-                        }
-
+                      
                     </div>
 
 
-                    @if (LIN.Access.Contacts.Session.Instance.Account.Rol != AccountRoles.Undefined)
-                    {
-                        <div class="h-6 bg-pink-600 rounded-xl flex items-center justify-center hover:bg-pink-300 mt-2">
-
-                            @if (LIN.Access.Contacts.Session.Instance.Account.Rol == AccountRoles.User)
-                            {
-                                <label class="text-xs text-white pl-3 pr-3">Usuario</label>
-                            }
-                            else if (LIN.Access.Contacts.Session.Instance.Account.Rol == AccountRoles.Admin)
-                            {
-                                <label class="text-xs text-white pl-3 pr-3">Administrador</label>
-                            }
-
-                        </div>
-                    }
                    
 
                 </div>
@@ -167,13 +128,7 @@
                         <img src="img/Products/chat.png" />
                     </button>
                     
-                    @if (LIN.Access.Contacts.Session.Instance.Account.OrganizationAccess != null)
-                    {
-                          <button class="bg-transparent h-7 w-7 rounded-lg hover:bg-gray-100 p-1 hover:p-2">
-                        <img src="img/Products/empresa.png" />
-                    </button>
-                    }
-                  
+             
 
                     <button class="bg-transparent h-7 w-7 rounded-lg hover:bg-gray-100 p-1 hover:p-2">
                         <img src="img/products/map.png" />
