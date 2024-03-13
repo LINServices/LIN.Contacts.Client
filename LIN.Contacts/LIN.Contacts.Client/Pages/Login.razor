@@ -1,109 +1,201 @@
 ﻿@page "/login"
+@rendermode InteractiveWebAssembly
+
+@* Propiedades *@
 <PageTitle>Iniciar Sesión</PageTitle>
 
-@rendermode InteractiveWebAssembly
-@inject NavigationManager nav
 
-<div class="h-screen md:flex select-none">
+@* Pantalla *@
+<div class="grid grid-cols-1 dl:grid-cols-2 min-h-dvh max-h-dvh w-full px-[-20px]">
 
-	<!-- Sección Visual -->
-	<div class="relative overflow-hidden md:flex w-1/2 bg-gradient-to-tr from-blue-800 to-purple-700 i justify-around items-center hidden">
-		<div>
-			<h1 class="text-white font-bold text-4xl font-bold">LIN</h1>
-			<p class="text-white mt-1">Servicios amigables al alcance de tu mano.</p>
-		</div>
-		<div class="absolute -bottom-32 -left-40 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"></div>
-		<div class="absolute -bottom-40 -left-20 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"></div>
-		<div class="absolute -top-40 -right-0 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"></div>
-		<div class="absolute -top-20 -right-20 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"></div>
-	</div>
 
-	<!-- Entradas de usuario -->
-	<div class="flex md:w-1/2 justify-center py-10 items-center bg-white h-screen">
+    @* Contenido *@
+    <div class="flex items-center justify-center w-full p-3">
 
-		<div class="mx-auto w-full max-w-md sm:px-4 md:w-96 md:max-w-sm md:px-0">
-			
-			<!-- Entrada -->
-			@if (Section == 0)
-			{
-				<!-- Bienvenida -->
-				<div class="flex flex-col">
-					<div class="flex flex-row items-center">
-						<label class="text-2xl self-center font-bold">
-							Bienvenido
-						</label>
-					</div>
+        @* Secciones *@
+        <div class="flex align-items-center w-max">
 
-					<div class="mt-1">
-						<p class="text-sm text-gray-700">
-							@if (IsWithKey)
-							{
-								<span>Iniciar sesión con tu teléfono</span>
-							}
-							else
-							{
-								<span>Iniciar sesión en tu cuenta</span>
-							}
-						</p>
-					</div>
-				</div>
+            @* Entradas *@
+            @if (Section == 0)
+            {
+                @*Contenedor*@
+                <div class="relative z-10 flex flex-1 flex-col px-4 py-10 sm:justify-center md:flex-none md:px-28">
+                    <div class="mx-auto w-full max-w-md sm:px-4 md:w-96 md:max-w-sm md:px-0">
 
-				<!-- Entradas -->
-				<div class="mt-8 grid grid-cols-1 gap-4">
+                        @* Header *@
+                        <div class="flex flex-col">
 
-					<!-- Usuario -->
-					<div>
-						<label class="mb-2 block text-sm font-medium text-gray-700">Usuario</label>
-						<input @oninput="HideError" @bind="User" type="text" autocomplete="off" required="" class="block w-full appearance-none rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-900 placeholder-gray-400 focus:ring-1 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-indigo-500 sm:text-sm">
-					</div>
+                            @* Nombre *@
+                            <div class="flex flex-row items-center">
 
-					<!-- Contraseña -->
-					@if (!IsWithKey)
-					{
-						<div>
-							<label class="mb-2 block text-sm font-medium text-gray-700">Contraseña</label>
-							<input @oninput="HideError" @bind="Password" type="password" autocomplete="off" class="block w-full appearance-none rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-900 placeholder-gray-400 focus:ring-1 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-indigo-500 sm:text-sm">
-						</div>
-					}
+                                <img class="self-center" src="./favicon.png" style="height:30px; width: 30px" />
+                                <label class="text-xl self-center ml-3 font-bold dark:text-gray-200">
+                                    LIN
+                                    <span class="text-transparent bg-clip-text bg-gradient-to-r to-current-500 from-current-500">
+                                        Contacts
+                                    </span>
 
-					<!-- Error -->
-					@if (ErrorMessage.Trim() != string.Empty)
-					{
-						<center class="" style="margin-bottom: -10px;">
-							<label class="text-red-500 font-bold text-sm">@ErrorMessage</label>
-						</center>
-					}
-					
-					<div class="flex flex-row mt-1">
-						<button @onclick="Start" class="group inline-flex items-center justify-center rounded-full py-2 px-4 text-sm font-bold focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 bg-indigo-600 text-white hover:text-slate-100 hover:bg-indigo-500 active:bg-indigo-800 active:text-indigo-100 focus-visible:outline-indigo-600 w-full"><!--!--><span>Iniciar <span aria-hidden="true">→</span></span></button><!--!-->
+                                </label>
+                            </div>
 
-						<button @onclick="()=>{IsWithKey = !IsWithKey; StateHasChanged();}" type="button" class="text-white bg-indigo-600 w-20 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center ml-2  flex justify-center"><!--!--><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="" viewBox="0 0 16 16"><path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm7 11a1 1 0 1 0-2 0 1 1 0 0 0 2 0z"></path></svg></button>
-					</div>
+                            @*Mensaje de cuenta*@
+                            <div class="mt-10">
 
-					<div class="flex flex-row justify-end items-end"><label class="text-sm text-indigo-600 hover:text-indigo-800"><!--!-->Olvide mi contraseña</label></div>
-				</div>
-			}
+                                @* Si es con llave *@
+                                @if (IsWithKey)
+                                {
+                                    <h2 class="text-lg font-bold text-gray-900 dark:text-white">
+                                        Iniciar sesión con Passkey
+                                    </h2>
+                                }
 
-			// Iniciando sección.
-			else if (Section == 1)
-			{
-				<div class="flex flex-col justify-center items-center">
+                                @* Si es con contraseña *@
+                                else
+                                {
+                                    <h2 class="text-lg font-bold text-gray-900  dark:text-white">
+                                        Iniciar sesión en tu cuenta
+                                    </h2>
+                                }
+
+                                <p class="mt-2 text-sm text-gray-700  dark:text-gray-300">
+                                    No tienes una cuenta?@* *@ <a style="text-decoration: none !important;"
+                                                                  class="font-medium text-current-500 hover:text-current-800"
+                                                                  href="/register">Regístrate</a> @* *@para iniciar a disfrutar
+                                </p>
+                            </div>
+
+                        </div>
+
+                        @* Cuerpo *@
+                        <div class="mt-6 grid grid-cols-1 gap-4">
+
+
+                            @*Usuario*@
+                            <div class="">
+                                <label for="email" class="mb-2 block text-sm font-medium text-gray-700  dark:text-gray-300">
+                                    Usuario
+                                </label>
+                                <input @onkeypress="HideError" @bind="User" type="text" autocomplete="off" required=""
+                                       class="block w-full appearance-none rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-900 placeholder-gray-400 focus:ring-1 focus:border-current-500 focus:bg-white focus:outline-none focus:ring-current-500 sm:text-sm dark:bg-zinc-900 dark:focus:bg-zinc-900 dark:text-zinc-200 dark:border-zinc-700">
+                            </div>
+
+
+                         
+
+                            @* Contraseña *@
+                            @if (!IsWithKey)
+                            {
+                                @*Contraseña*@
+                                <div class="">
+                                    <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Contraseña</label>
+                                    <input @onkeypress="HideError"
+                                           @bind="                                                Password" type="password"
+                                           autocomplete="off"
+                                           class="block w-full appearance-none rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-900 placeholder-gray-400 focus:ring-1 focus:border-current-500 focus:bg-white focus:outline-none focus:ring-current-500 sm:text-sm dark:bg-zinc-900 dark:focus:bg-zinc-900 dark:text-zinc-200 dark:border-zinc-700">
+                                </div>
+                            }
+
+
+                            @* Mensaje de error *@
+                            <center class="@(ErrorVisible ? "visible":"hidden")" style="margin-bottom: -10px;">
+                                <label class="text-red-500 font-bold text-sm">@ErrorMessage</label>
+                            </center>
+
+
+                            @* Botón *@
+                            <div class="flex flex-row mt-1">
+
+                                @* Botón iniciar *@
+                                <button @onclick="Start"
+                                        class="group inline-flex items-center justify-center rounded-full py-2 px-4 text-sm font-bold focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 bg-current-500 dark:bg-current-600 text-white hover:text-slate-100 hover:bg-current-800 active:bg-current-800 active:text-current-100 focus-visible:outline-current-500 w-full">
+                                    <span>Iniciar <span aria-hidden="true">→</span></span>
+                                </button>
+
+
+                                @* Botón de iniciar con llave *@
+                                <button @onclick="GotoLoginKey" type="button"
+                                        class="flex text-white bg-current-500 dark:bg-current-600 w-20 hover:bg-current-800 focus:ring-4 focus:outline-none focus:ring-current-300 font-medium rounded-full text-sm p-2.5 text-center items-center ml-2  justify-center">
+
+                                    @if (IsWithKey)
+                                    {
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                             class="bi bi-x-lg" viewBox="0 0 16 16">
+                                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+                                        </svg>
+                                    }
+                                    else
+                                    {
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                                             class="" viewBox="0 0 16 16">
+                                            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm7 11a1 1 0 1 0-2 0 1 1 0 0 0 2 0z" />
+                                        </svg>
+                                    }
+
+                                </button>
+
+
+                            </div>
+
+                            @* Olvide mi contraseña *@
+                            <div class="flex flex-row justify-end items-end">
+                                <label @onclick="GoToForget" class="text-sm text-current-500 hover:text-current-800">
+                                    Olvide mi
+                                    contraseña
+                                </label>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+
+            }
+
+            @* Correcto *@
+            else if (Section == 1)
+            {
+                <div class="flex items-center justify-center">
+                    <Success />
+                </div>
+            }
+
+            @* Fallido *@
+            else if (Section == 2)
+            {
+                <div class="flex flex-col items-center justify-center">
+                    <Failure />
+                    <label class="text-red-500">@ErrorMessage</label>
+                </div>
+            }
+
+            @* Cargando *@
+            else
+            {
+
+                <div class="flex flex-col items-center justify-center">
                     <CircleLoader />
-                    <label class="mt-1 text-zinc-700">Iniciando sesión</label>
-				</div>
-			}
+                    <h5 class="mt-2 font-bold text-sm text-gray-600 dark:text-gray-300">@LogMessage</h5>
+                    @if (ShowButtonCancel)
+                    {
+                        <label @onclick="CancelPasskey" class="hover:text-current-500 text-sm dark:text-gray-400">Cancelar</label>
+                    }
+                </div>
 
-			// Esperando teléfono.
-			else if (Section == 2)
-			{
-				<div class="flex flex-col justify-center items-center">
-					<img src="./img/smartphone.png" class="h-8 w-8" />
-					<label class="mt-1 text-zinc-700">Revisa tu teléfono</label>
-				</div>
-			}
+            }
 
-		</div>
+        </div>
 
-	</div>
+    </div>
+
+
+    @* Imagen *@
+    <div class="hidden dl:block dl:w-full rounded-lg p-3">
+
+        <div class="w-full h-full bg-image rounded-lg">
+        </div>
+
+    </div>
+
 
 </div>

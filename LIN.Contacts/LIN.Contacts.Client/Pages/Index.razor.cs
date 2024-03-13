@@ -18,7 +18,7 @@ public partial class Index
 
         if(Pattern.Trim().Length < 0)
         {
-            RenderList = Contactos;
+            RenderList = Contactos.GroupBy(t => t.Nombre[0]).ToList();
             StateHasChanged();
             return;
         }
@@ -30,7 +30,7 @@ public partial class Index
                       where C.Nombre.ToLower().Contains(pattern)
                       | C.Mails.Where(T => T.Email.ToLower().Contains(pattern)).Any()
                       | C.Phones.Where(T => T.Number.ToLower().Contains(pattern)).Any()
-                      select C).ToList();
+                      select C).GroupBy(t => t.Nombre[0]).ToList();
 
 
         StateHasChanged() ;
@@ -132,7 +132,7 @@ public partial class Index
         {
             AreProjectLoaded = true;
             Contactos = result.Models;
-            RenderList = result.Models;
+            RenderList = result.Models.GroupBy(t => t.Nombre[0]).ToList();
             StateHasChanged();
         }
 

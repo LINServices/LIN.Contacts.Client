@@ -21,6 +21,8 @@ else
 
 app.UseHttpsRedirection();
 
+LIN.Access.Auth.Build.Init();
+
 app.UseStaticFiles();
 app.UseAntiforgery();
 

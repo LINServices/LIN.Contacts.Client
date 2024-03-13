@@ -12,7 +12,11 @@ function ShowDrawer(id, ...idCloseBtn)
 
     const closeButton = document.getElementById(idCloseBtn);
 
-    const drawer = new Drawer(control);
+    const options = {
+        backdropClasses: 'bg-zinc-900 bg-opacity-20 fixed inset-0 z-30'
+    };
+
+    const drawer = new Drawer(control, options);
 
     drawer.show();
 
@@ -37,6 +41,12 @@ function ShowDrawer(id, ...idCloseBtn)
     }
 
 }
+
+
+
+
+
+
 
 // Abre
 function ForceClick(id)
@@ -92,8 +102,28 @@ function ShowModal(id, ...idCloseBtn) {
     // Control
     const control = document.getElementById(id);
 
+
+
+    // options with default values
+    const options = {
+        placement: 'center',
+        backdrop: 'dynamic',
+        backdropClasses:
+            'bg-zinc-900/50 dark:bg-black/80 fixed inset-0 z-40',
+        closable: true,
+        onHide: () => {
+            console.log('modal is hidden');
+        },
+        onShow: () => {
+            console.log('modal is shown');
+        },
+        onToggle: () => {
+            console.log('modal has been toggled');
+        },
+    };
+
   
-    const drawer = new Modal(control);
+    const drawer = new Modal(control, options);
 
     // show the drawer
     drawer.show();
@@ -241,4 +271,17 @@ function I() {
     // show the target element
     collapse1.toggle();
 
+}
+
+
+
+
+
+function enviarCorreo(mail) {
+    var destinatario = "destinatario@example.com";
+
+    var mailtoURL = "mailto:" + mail;
+
+    // Abrir el cliente de correo predeterminado del usuario
+    window.location.href = mailtoURL;
 }

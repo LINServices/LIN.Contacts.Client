@@ -1,271 +1,399 @@
-﻿namespace LIN.Contacts.Client.Pages;
+﻿
+using LIN.Access.Auth.Hubs;
+
+namespace LIN.Contacts.Client.Pages;
 
 
 public partial class Login
 {
 
-	/// <summary>
-	/// Navegación entre paginas.
-	/// </summary>
-	[Inject]
-	public NavigationManager? NavigationManager { get; set; }
+    /// <summary>
+    /// Navegación.
+    /// </summary>
+    [Inject]
+    private NavigationManager? NavigationManager { get; set; }
 
 
+    /// <summary>
+    /// Obtiene si se esta log con una llave de acceso
+    /// </summary>
+    private bool IsWithKey { get; set; } = false;
 
-	/// <summary>
-	/// Runtime de JavaScript.
-	/// </summary>
-	[Inject]
-	public IJSRuntime? JSRuntime { get; set; }
 
+    /// <summary>
+    /// Usuario
+    /// </summary>
+    private string User { get; set; } = "";
 
 
-	/// <summary>
-	/// Usuario.
-	/// </summary>
-	private string User { get; set; } = string.Empty;
+    /// <summary>
+    /// Contraseña
+    /// </summary>
+    private string Password { get; set; } = "";
 
 
+    /// <summary>
+    /// Mensaje que se muestra al cargar
+    /// </summary>
+    private string LogMessage { get; set; } = "Iniciando Sesión";
 
-	/// <summary>
-	/// Contraseña.
-	/// </summary>
-	private string Password { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Mensaje de error
+    /// </summary>
+    private string ErrorMessage { get; set; } = "";
 
 
-	/// <summary>
-	/// Mensaje de error
-	/// </summary>
-	private string ErrorMessage { get; set; } = string.Empty;
+    /// <summary>
+    /// Visibilidad del error.
+    /// </summary>
+    private bool ErrorVisible { get; set; } = false;
 
 
 
+    /// <summary>
+    /// Mostrar el botón de cancelar.
+    /// </summary>
+    private bool ShowButtonCancel { get; set; } = false;
 
-	/// <summary>
-	/// Obtiene si se esta log con una llave de acceso
-	/// </summary>
-	private bool IsWithKey { get; set; } = false;
 
 
-	/// <summary>
-	/// Sección.
-	/// </summary>
-	private int Section { get; set; } = 0;
+    /// <summary>
+    /// Sección actual.
+    /// </summary>
+    private int Section { get; set; } = 0;
 
 
 
+    /// <summary>
+    /// La respuesta de hub ya fue recibida.
+    /// </summary>
+    private bool isResponseReceive = false;
 
 
 
-	bool cancelShow = false;
+    /// <summary>
+    /// Id único de inicio passkey.
+    /// </summary>
+    private string Unique = "";
 
-	private bool isLogin = false;
 
+    /// <summary>
+    /// Hub passkey.
+    /// </summary>
+    private PassKeyHub? hub = null;
 
 
 
-	/// <summary>
-	/// Muestra un mensaje
-	/// </summary>
-	void ShowError(string message)
-	{
-		ErrorMessage = message;
-		StateHasChanged();
-	}
+    /// <summary>
+    /// Evento.
+    /// </summary>
+    protected override async Task OnInitializedAsync()
+    {
 
 
-	void HideError()
-	{
-		ErrorMessage = string.Empty;
-		StateHasChanged();
-	}
+        if (Access.Auth.SessionAuth.IsOpen)
+        {
+            NavigationManager?.NavigateTo("/");
+            return;
+        }
 
+     
+        _ = base.OnInitializedAsync();
 
+    }
 
-	/// <summary>
-	/// Inicia sesion
-	/// </summary>
-	async void Start()
-	{
 
-		if (IsWithKey)
-		{
-			StartKey();
-			return;
-		}
 
-		Section = 1;
+    /// <summary>
+    /// Actualizar la sección.
+    /// </summary>
+    /// <param name="section">Id de la sección</param>
+    private void UpdateSection(int section)
+    {
+        InvokeAsync(() =>
+        {
+            Section = section;
+            StateHasChanged();
+        });
+    }
+
+
+
+    /// <summary>
+    /// Oculta los errores
+    /// </summary>
+    void HideError()
+    {
+        ErrorVisible = false;
+        StateHasChanged();
+    }
+
+
+
+    /// <summary>
+    /// Oculta los errores
+    /// </summary>
+    void GoToForget()
+    {
+        NavigationManager?.NavigateTo("/login/forgetPassword");
+    }
 
-		// Sin información
-		if (User.Length <= 0 || Password.Length <= 0)
-		{
-			Section = 0;
-			ShowError("Completa todos los campos");
-			return;
-		}
 
-		// Inicio de sesion
-		var login = await LIN.Access.Contacts.Session.LoginWith(User, Password);
-		var AA =  LIN.Access.Contacts.Session.Instance;
 
-		if (login.Response == Responses.Success)
-		{
+    /// <summary>
+    /// Muestra un mensaje
+    /// </summary>
+    void ShowError(string message)
+    {
+        InvokeAsync(() =>
+        {
+            UpdateSection(0);
+            ErrorVisible = true;
+            ErrorMessage = message;
+            StateHasChanged();
+        });
+    }
+
+
+
+    /// <summary>
+    /// Muestra un mensaje
+    /// </summary>
+    void GotoLoginKey()
+    {
+        IsWithKey = !IsWithKey;
+        StateHasChanged();
+    }
+
+
 
-			//Online.StaticHub.LoadHub();
-			nav.NavigateTo("/");
-			return;
+    /// <summary>
+    /// Inicia sesión.
+    /// </summary>
+    private async void Start()
+    {
+
+        // Validar si es con llave.
+        if (IsWithKey)
+        {
+            StartKey();
+            return;
+        }
+
+        // Estado cargando.
+        UpdateSection(3);
+
+        // Ocultar el error.
+        HideError();
+
+        // Validar parámetros.
+        if (User.Length <= 0 || Password.Length <= 0)
+        {
+            ShowError("Completa todos los campos");
+            return;
+        }
+
+
+        // Iniciar sesión.
+        var (Session, Response) = await LIN.Access.Contacts.Session.LoginWith(User, Password);
 
-		}
-		else if (login.Response == Responses.InvalidPassword)
-		{
-			Section = 0;
-			ShowError("La contraseña es incorrecta");
-		}
-		else if (login.Response == Responses.NotExistAccount)
-		{
-			Section = 0;
-			ShowError($"No existe el usuario {User}");
-		}
-		else if (login.Response == Responses.UnauthorizedByOrg)
-		{
-			Section = 0;
-			ShowError($"Tu organización no permite que accedas a esta app");
-		}
-		else
-		{
-			Section = 0;
-			ShowError("Inténtalo mas tarde");
-		}
-
-
-	}
-
-
+        // Validar respuesta.
+        switch (Response)
+        {
 
+            // Correcto.
+            case Responses.Success:
 
+                // Navegar.
+                NavigationManager?.NavigateTo("/");
+                return;
 
+            // Contraseña incorrecta.
+            case Responses.InvalidPassword:
+                ShowError("La contraseña es incorrecta");
+                break;
 
+            // No existe la cuenta.
+            case Responses.NotExistAccount:
+                ShowError($"No se encontró el usuario '{User}'");
+                break;
 
+            // Desautorizado por la organización.
+            case Responses.UnauthorizedByOrg:
+                ShowError($"Tu organización no permite que accedas a esta app");
+                break;
 
-	LIN.Access.Auth.Hubs.PassKeyHub? hub;
+            default:
+                ShowError("Inténtalo mas tarde");
+                break;
 
-	/// <summary>
-	/// Inicia sesion
-	/// </summary>
-	async void StartKey()
-	{
-		cancelShow = false;
-		Section = 2;
+
+        }
 
-		// Sin informacion
-		if (User.Length <= 0)
-		{
-			Section = 0;
-			ShowError("Usuario requerido");
-			return;
-		}
+    }
 
 
-		// Suscribir al Hub
-		hub = new LIN.Access.Auth.Hubs.PassKeyHub(User, "Q777Q", LIN.Access.Auth.SessionAuth.Instance.AccountToken);
 
-		await hub.Suscribe();
-		bool reive = false;
+    /// <summary>
+    /// Inicia sesión
+    /// </summary>
+    async void StartKey()
+    {
+        // Id único.
+        string localUnique = Guid.NewGuid().ToString();
+        Unique = localUnique;
 
-		hub.OnReceiveResponse += async (o, e) =>
-		{
-			await base.InvokeAsync(async () =>
-			{
-				reive = true;
+        // Mostrar mensaje.
+        ShowButtonCancel = false;
+        isResponseReceive = false;
+        LogMessage = "Revisa tu dispositivo";
+        UpdateSection(3);
+        HideError();
 
-				switch (e.Status)
-				{
-					case PassKeyStatus.Success:
-						break;
+        // Validar parámetros.
+        if (User.Length <= 0)
+        {
+            ShowError("Completa el campo de usuario");
+            return;
+        }
 
-					case PassKeyStatus.Rejected:
-						Section = 0;
-						ShowError("Passkey rechazada");
-						return;
+        // Crear el hub.
+        hub = new(User, string.Empty, string.Empty);
 
-					case PassKeyStatus.Expired:
-						Section = 0;
-						ShowError("La sesión expiro");
-						return;
+        // Esperar la creación.
+        await hub.Suscribe();
 
-					case PassKeyStatus.BlockedByOrg:
-						Section = 0;
-						ShowError("Tu organización no permite que inicies en esta aplicación.");
-						return;
+        // Crear evento.
+        hub.OnReceiveResponse += OnReceiveResponse;
 
-					default:
-						Section = 0;
-						ShowError("Hubo un error en Passkey");
-						return;
-				}
+        // Intento.
+        PassKeyModel intent = new()
+        {
+            User = User
+        };
 
+        // Enviar el evento.
+        hub.SendIntent(intent);
 
-				cancelShow = false;
-				Section = 1;
-				base.StateHasChanged();
+        // Mostrar el botón de cancelar.
+        await Task.Delay(3000);
+        ShowButtonCancel = true;
+        StateHasChanged();
 
-				// Inicio de sesion
-				var login = await LIN.Access.Contacts.Session.LoginWith(e.Token);
+        // Tiempo de expiración.
+        await Task.Delay(30000);
 
-				if (login.Response == Responses.Success)
-				{
+        if (isResponseReceive || localUnique != Unique)
+            return;
 
-					//Online.StaticHub.LoadHub();
-					nav.NavigateTo("/");
-					return;
+        // Desconectar el hub.
+        hub?.Disconnect();
+        hub = null;
+        Show("La sesión de passkey ha expirado");
+        StateHasChanged();
 
-				}
-				else if (login.Response == Responses.InvalidPassword)
-				{
-					Section = 0;
-					ShowError("La sesion de passkey ha expirado");
-				}
-				else if (login.Response == Responses.NotExistAccount)
-				{
-					Section = 0;
-					ShowError($"No existe el usuario {User}");
-				}
-				else
-				{
-					Section = 0;
-					ShowError("Intentalo de nuevo mas tarde");
-				}
-			});
+    }
 
-			// Hace el inicio
 
 
+    /// <summary>
+    /// Evento al recibir la respuesta de passkey.
+    /// </summary>
+    private async void OnReceiveResponse(object? sender, PassKeyModel e)
+    {
 
-		};
+        // Nuevo estado.
+        isResponseReceive = true;
 
-		var intent = new PassKeyModel()
-		{
-			User = User
-		};
+        // Segun el estado.
+        switch (e.Status)
+        {
+            case PassKeyStatus.Success:
+                break;
 
-		hub.SendIntent(intent);
+            case PassKeyStatus.Rejected:
+                Show("El intento Passkey fue rechazada");
+                return;
 
-		await Task.Delay(3000);
-		cancelShow = true;
-		base.StateHasChanged();
+            case PassKeyStatus.Expired:
+                Show("La sesión expiro");
+                return;
 
-		await Task.Delay(60000);
+            case PassKeyStatus.BlockedByOrg:
+                Show("Tu organización no permite que inicies en esta aplicación.");
+                return;
 
-		if (reive)
-			return;
+            default:
+                Show("Hubo un error al iniciar sesión con passkey");
+                return;
+        }
 
-		hub.Disconnect();
-		hub = null;
-		Section = 0;
-		ShowError("La sesión de passkey ha expirado");
 
-	}
+        // Estado de animación.
+        UpdateSection(1);
+
+        // Generar login.
+        var logIn = Access.Contacts.Session.LoginWith(e.Token);
+
+        // Esperar 4 segundos.
+        await Task.Delay(4000);
+
+        // Esperar la respuesta de login.
+        var (session, response) = await logIn;
+
+        // Segun la respuesta.
+        switch (response)
+        {
+
+            // Correcto.
+            case Responses.Success:
+                NavigationManager?.NavigateTo("/");
+                return;
+
+            // Otros.
+            default:
+                Show("Hubo un error al iniciar sesión");
+                break;
+        }
+
+    }
+
+
+
+
+    /// <summary>
+    /// Cancelar passkey.
+    /// </summary>
+    void CancelPasskey()
+    {
+        hub?.Disconnect();
+        hub = null;
+        UpdateSection(0);
+        return;
+    }
+
+
+
+    /// <summary>
+    /// Mostrar error.
+    /// </summary>
+    /// <param name="message">Mensaje de error.</param>
+    void Show(string message)
+    {
+        InvokeAsync(async () =>
+         {
+             // Estado fallido.
+             ErrorMessage = message;
+             UpdateSection(2);
+
+             // Esperar 2 segundos.
+             await Task.Delay(2000);
+
+             ShowError(message);
+         });
+    }
+
 
 
 

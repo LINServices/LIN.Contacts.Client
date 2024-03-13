@@ -60,7 +60,9 @@
     /// </summary>
     public static List<ContactModel> Contactos { get; set; } = new();
 
-    public static List<ContactModel> RenderList { get; set; } = new();
+
+
+    public static List<IGrouping<char, ContactModel>> RenderList { get; set; } = new();
 
 
     void RunEmma()
@@ -80,10 +82,6 @@
 }
 
 
-<!-- Cabezeras -->
-<NavBar Tablero="true" />
-
-
 
 <Emma @ref=EmmaIA></Emma>
 
@@ -91,15 +89,149 @@
 <ContactModal @ref="ModalContactos"></ContactModal>
 
 
+<div class="flex w-full justify-center">
+
+    <div class="w-full max-w-4xl">
+
+        <div class="p-4">
+
+            <div class="flex items-center mt-4">
+
+                <div class="flex-grow bg-[#f2f1f6] rounded-full h-10 px-4 flex items-center dark:bg-zinc-900 dark:text-zinc-300">
+
+                    <div>
+                        <svg class="h-4 w-4 mr-2 fill-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" /></svg>
+                    </div>
+
+
+                    <input @oninput="Search" class="bg-transparent focus:outline-none w-full" type="text" placeholder="Buscar contactos, correos o telefonos">
+                </div>
+
+                <div class="flex items-center h-full ml-4">
+
+                    <button @onclick="A" class="text-green-500 mr-2 h-10 w-10 bg-green-200/30 p-2.5 rounded-full">
+                        <svg class="h-full w-full fill-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" /></svg>
+                    </button> 
+                    
+                    
+                    <button @onclick="RunEmma" class="text-current-500 mr-2 h-10 w-10 bg-current-200/30 p-2.5 rounded-full">
+                        <svg class="h-full w-full fill-current-500" xmlns="http://www.w3.org/2000/svg" version="1.0" viewBox="0 0 256.000000 256.000000" preserveAspectRatio="xMidYMid meet">
+
+                            <g transform="translate(0.000000,256.000000) scale(0.100000,-0.100000)" stroke="none">
+                                <path d="M1160 2550 c-429 -40 -821 -306 -1015 -690 -98 -195 -137 -361 -137 -580 0 -349 126 -656 371 -901 246 -245 552 -371 901 -371 223 0 407 45 595 145 68 36 83 49 103 87 12 24 22 58 22 75 0 54 -40 117 -90 143 -59 30 -102 25 -205 -27 -288 -143 -623 -133 -900 27 -224 130 -387 349 -452 608 -24 95 -24 333 0 428 65 258 227 478 448 605 506 293 1145 71 1362 -471 55 -135 61 -184 62 -441 l0 -239 -33 -29 c-46 -41 -108 -41 -154 0 l-33 29 -6 229 c-5 167 -11 244 -23 288 -102 365 -462 591 -830 521 -388 -75 -646 -452 -572 -838 20 -102 49 -175 105 -260 222 -338 680 -429 1008 -198 l70 49 42 -43 c167 -170 437 -181 608 -23 58 54 99 113 126 185 20 53 21 74 21 312 -1 278 -13 374 -70 532 -153 426 -516 741 -952 827 -119 23 -259 31 -372 21z m292 -918 c79 -38 149 -110 186 -190 24 -50 27 -69 27 -162 0 -93 -3 -112 -27 -162 -37 -80 -107 -152 -187 -191 -61 -30 -72 -32 -171 -32 -93 0 -112 3 -162 27 -80 37 -152 107 -191 187 -30 61 -32 72 -32 171 0 93 3 112 27 162 47 100 137 180 241 214 26 9 76 13 133 11 79 -2 100 -7 156 -35z" />
+                            </g>
+                        </svg>
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="flex items-center justify-between mt-5">
+
+                <div class="flex items-center">
+                    <img class="w-12 h-12 rounded-full mr-3" src="https://placehold.co/100x100">
+                    <div>
+                        <h1 class="text-lg font-semibold dark:text-zinc-300">@Session.Instance.Account.Name</h1>
+                        <p class="text-sm text-gray-500 dark:text-zinc-400">1109 contacts</p>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="flex overflow-x-auto mt-5">
+                <div class="flex flex-nowrap">
+
+                    <div class="flex flex-col  bg-[#f2f1f6] py-5 px-3 rounded-xl dark:bg-zinc-900">
+
+
+                        <div class="w-10 h-10 max-w-xs overflow-hidden rounded-full">
+                            <img class="w-full h-full" src="https://placehold.co/100x100" alt="Profile picture of Jennifer Johnson">
+                        </div>
+
+                        <label class="mt-2 font-bold dark:text-zinc-300">Jennifer Jon...</label>
+
+
+                        <div class="flex justify-between mt-2">
+
+                            <button class="text-green-500 bg-green-500/15 hover:text-green-600 hover:bg-green/20  rounded-full p-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z" />
+                                </svg>
+                            </button>
+
+                            <button class="text-blue-500 bg-blue-500/15 hover:text-blue-600 hover:bg-blue/20 rounded-full p-2 ml-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z" /></svg>
+
+                            </button>
+
+                            <button class="flex items-center justify-center text-indigo-500 bg-indigo-500/15 hover:text-indigo-600 hover:bg-indigo/20 rounded-full p-2 ml-2">
+
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M64 0C28.7 0 0 28.7 0 64V352c0 35.3 28.7 64 64 64h96v80c0 6.1 3.4 11.6 8.8 14.3s11.9 2.1 16.8-1.5L309.3 416H448c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H64z" /></svg>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="px-4">
+
+            @if (!AreProjectLoaded)
+            {
+                <div class="flex items-center justify-center h-9 w-full rounded-lg">
+                    <CircleLoader />
+                </div>
+            }
+            else
+            {
 
 
 
+                @foreach (var group in RenderList)
+                {
+                    <div>
+
+                        <div class="flex items-center justify-between mt-2">
+                            <p class="text-sm font-semibold text-gray-800 dark:text-gray-300">@group.Key</p>
+                        </div>
+
+                        <div class="mt-2">
+
+                            @foreach (var e in group)
+                            {
+                                <ContactComponent Modelo="e" Modal="ModalContactos"></ContactComponent>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+
+
+
+    </div>
+
+</div>
+
+
+
+
+
+@*
 <div class="layoutMain">
 
 
 
         <h1 class="font-bold" style="font-size: 35px">Bienvenido a LIN</h1>
-    
+
 
 
 
@@ -177,7 +309,7 @@
 
     </div>
 
-</div>
+</div> *@
 
 
 <DrawerProject OnSuccessCreate="OnSucces" />
