@@ -17,6 +17,7 @@
     <ProjectReference Include="..\..\..\..\AccesoAPI\LIN.Access.Auth\LIN.Access.Auth.csproj" />
     <ProjectReference Include="..\..\..\..\AccesoAPI\LIN.Access.Contacts\LIN.Access.Contacts.csproj" />
     <ProjectReference Include="..\..\..\..\AccesoAPI\LIN.Access.Search\LIN.Access.Search.csproj" />
+    <ProjectReference Include="..\..\..\..\Components\LIN.Emma.UI\LIN.Emma.UI\LIN.Emma.UI.csproj" />
     <ProjectReference Include="..\..\..\..\Tipos\LIN.Modules\LIN.Modules.csproj" />
     <ProjectReference Include="..\..\..\..\Tipos\LIN.Types.Cloud.Identity\LIN.Types.Cloud.Identity.csproj" />
     <ProjectReference Include="..\..\..\..\Tipos\LIN.Types.Contacts\LIN.Types.Contacts.csproj" />
