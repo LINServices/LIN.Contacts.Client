@@ -78,7 +78,9 @@
     }
 
 
-    public ContactModal ModalContactos { get; set; }
+    public static ContactModal ModalContactos { get; set; }
+
+
 }
 
 
@@ -86,7 +88,7 @@
 <EmmaDrawer @ref=EmmaIA></EmmaDrawer>
 
 
-<ContactModal @ref="ModalContactos"></ContactModal>
+
 
 
 <div class="flex w-full justify-center">
@@ -192,8 +194,6 @@
             else
             {
 
-
-
                 @foreach (var group in RenderList)
                 {
                     <div>
@@ -206,7 +206,7 @@
 
                             @foreach (var e in group)
                             {
-                                <ContactComponent Modelo="e" Modal="ModalContactos"></ContactComponent>
+                                <ContactComponent Modelo="e"></ContactComponent>
                             }
                         </div>
                     </div>
@@ -314,4 +314,4 @@
 
 <DrawerProject OnSuccessCreate="OnSucces" />
 <DrawerSync OnSuccessCreate="OnSucces" />
-
+<ContactModal @ref="ModalContactos"></ContactModal>

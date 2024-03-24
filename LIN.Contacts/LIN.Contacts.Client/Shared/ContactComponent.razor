@@ -11,10 +11,6 @@
     public EventCallback<MouseEventArgs> OnDelete { get; set; }
 
 
-    [Parameter]
-    public ContactModal Modal { get; set; }
-
-
     string Message = "";
 
     private string state = "";
@@ -125,8 +121,8 @@
 
     void GotoProj()
     {
-        Modal.Modelo = Modelo;
-        Modal.Show();
+        Pages.Index.ModalContactos.Modelo = Modelo;
+        Pages.Index.ModalContactos.Show();
     }
 
 

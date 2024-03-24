@@ -2429,6 +2429,11 @@ video {
   background-color: rgb(24 24 27 / 0.5);
 }
 
+.bg-red-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(248 113 113 / var(--tw-bg-opacity));
+}
+
 .bg-opacity-20 {
   --tw-bg-opacity: 0.2;
 }
@@ -2568,6 +2573,18 @@ video {
 
 .fill-zinc-500 {
   fill: #71717a;
+}
+
+.fill-blue-500 {
+  fill: #3b82f6;
+}
+
+.fill-indigo-500 {
+  fill: #6366f1;
+}
+
+.fill-rose-500 {
+  fill: #f43f5e;
 }
 
 .stroke-current-500 {
