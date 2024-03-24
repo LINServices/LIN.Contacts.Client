@@ -11,6 +11,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 LIN.Access.Auth.Build.Init();
 LIN.Access.Search.Build.Init();
+LIN.Access.Contacts.Build.Init();
 
 
 await builder.Build().RunAsync();

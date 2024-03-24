@@ -22,6 +22,7 @@ else
 app.UseHttpsRedirection();
 
 LIN.Access.Auth.Build.Init();
+LIN.Access.Contacts.Build.Init();
 
 app.UseStaticFiles();
 app.UseAntiforgery();

@@ -55,7 +55,7 @@ public partial class EmmaDrawer
     {
 
         if (DocEmma != null)
-            DocEmma.ResponseIA = Access.Contacts.Controllers.Profiles.ToEmma(e, Access.Contacts.Session.Instance.AccountToken);
+            DocEmma.ResponseIA = Access.Contacts.Controllers.Emma.ToEmma(e, Access.Contacts.Session.Instance.AccountToken);
     }
 
 
