@@ -132,7 +132,7 @@ public partial class Index
         {
             AreProjectLoaded = true;
             Contactos = result.Models;
-            RenderList = result.Models.GroupBy(t => t.Nombre[0]).ToList();
+            RenderList = result.Models.GroupBy(t => t.Nombre[0].ToString().ToUpper()[0]).ToList();
             StateHasChanged();
         }
 
