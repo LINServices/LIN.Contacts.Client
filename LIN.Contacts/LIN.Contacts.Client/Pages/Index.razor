@@ -19,69 +19,11 @@
     return;
 }
 
-<!-- Estilos -->
-<link href="./css/Index.css" rel="stylesheet" />
-<style>
-    .imgS {
-        padding-top: 27%;
-    }
-
-    .texto-ss {
-        font-size: 2vh;
-    }
-</style>
 
 @{
     Me = this;
 }
 
-<!-- Variables Estáticas -->
-@code
-{
-
-
-    EmmaDrawer EmmaIA { get; set; }
-    string Pattern = "";
-
-    /// <summary>
-    /// Obtiene si los proyectos ya están cargados
-    /// </summary>
-    public static Index Me { get; set; }
-
-
-    /// <summary>
-    /// Obtiene si los proyectos ya están cargados
-    /// </summary>
-    public static bool AreProjectLoaded { get; set; }
-
-
-    /// <summary>
-    /// OLista de proyectos
-    /// </summary>
-    public static List<ContactModel> Contactos { get; set; } = new();
-
-
-
-    public static List<IGrouping<char, ContactModel>> RenderList { get; set; } = new();
-
-
-    void RunEmma()
-    {
-        EmmaIA.Show();
-    }
-
-    protected override void OnInitialized()
-    {
-
-
-        base.OnInitialized();
-    }
-
-
-    public static ContactModal ModalContactos { get; set; }
-
-
-}
 
 
 
@@ -112,12 +54,12 @@
 
                 <div class="ml-4 flex h-full items-center">
 
-                    <button @onclick="A" class="bg-green-200/30 mr-2 h-10 w-10 rounded-full p-2.5 text-green-500">
+                    <button @onclick="OpenCreate" class="bg-green-200/30 mr-2 h-10 w-10 rounded-full p-2.5 text-green-500">
                         <svg class="h-full w-full fill-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" /></svg>
                     </button> 
                     
                     
-                    <button @onclick="RunEmma" class="bg-current-200/30 mr-2 h-10 w-10 rounded-full p-2.5 text-current-500">
+                    <button @onclick="OpenEmma" class="bg-current-200/30 mr-2 h-10 w-10 rounded-full p-2.5 text-current-500">
                         <svg class="h-full w-full fill-current-500" xmlns="http://www.w3.org/2000/svg" version="1.0" viewBox="0 0 256.000000 256.000000" preserveAspectRatio="xMidYMid meet">
 
                             <g transform="translate(0.000000,256.000000) scale(0.100000,-0.100000)" stroke="none">
@@ -233,6 +175,5 @@
 
 
 
-<DrawerProject OnSuccessCreate="OnSucces" />
-<DrawerSync OnSuccessCreate="OnSucces" />
+<DrawerProject OnSuccessCreate="OnSuccess" />
 <ContactModal @ref="ModalContactos"></ContactModal>

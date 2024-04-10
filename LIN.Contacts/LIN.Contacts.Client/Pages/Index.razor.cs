@@ -1,106 +1,136 @@
-﻿namespace LIN.Contacts.Client.Pages;
+﻿using LIN.Contacts.Client.Components;
+using LIN.Contacts.Client.Modales;
+
+namespace LIN.Contacts.Client.Pages;
 
 
 public partial class Index
 {
 
+    /// <summary>
+    /// Emma.
+    /// </summary>
+    private EmmaDrawer? EmmaIA { get; set; }
 
 
-    public void Search(dynamic e)
+
+    /// <summary>
+    /// Patron de búsqueda.
+    /// </summary>
+    private string Pattern { get; set; } = string.Empty;
+
+
+
+    /// <summary>
+    /// Obtiene si los proyectos ya están cargados
+    /// </summary>
+    public static Index Me { get; set; } = null!;
+
+
+
+    /// <summary>
+    /// Obtiene si los proyectos ya están cargados
+    /// </summary>
+    public static bool AreProjectLoaded { get; set; }
+
+
+
+    /// <summary>
+    /// OLista de proyectos
+    /// </summary>
+    public static List<ContactModel> Contactos { get; set; } = [];
+
+
+
+    /// <summary>
+    /// Lista de renderizado.
+    /// </summary>
+    public static List<IGrouping<char, ContactModel>> RenderList { get; set; } = new();
+
+
+
+    /// <summary>
+    /// Modal de contacto.
+    /// </summary>
+    public static ContactModal? ModalContactos { get; set; }
+
+
+
+
+    /// <summary>
+    /// Abrir Emma.
+    /// </summary>
+    private void OpenEmma() => EmmaIA?.Show();
+  
+
+
+    /// <summary>
+    /// Buscar.
+    /// </summary>
+    /// <param name="e"></param>
+    public void Search(ChangeEventArgs e)
     {
 
-        if (e is Microsoft.AspNetCore.Components.ChangeEventArgs a)
-        {
-            Pattern = a.Value?.ToString() ?? "";
-        }
-        Console.WriteLine(Pattern);
+        // Patron de búsqueda.
+        Pattern = e.Value?.ToString() ?? string.Empty;
 
-
-        if (Pattern.Trim().Length < 0)
+        // Patron vacío.
+        if (string.IsNullOrWhiteSpace(Pattern))
         {
-            RenderList = Contactos.GroupBy(t => t.Nombre[0]).ToList();
+            // Lista original.
+            RenderList = Contactos.GroupBy(contact => contact.Nombre[0]).ToList();
+
+            // Estado.
             StateHasChanged();
+
             return;
         }
 
-        string pattern = Pattern.Trim().ToLower();
 
+        // Buscar.
+        string pattern = Pattern.Normalize().Trim().ToLower();
 
-        RenderList = (from C in Contactos
-                      where C.Nombre.ToLower().Contains(pattern)
-                      | C.Mails.Where(T => T.Email.ToLower().Contains(pattern)).Any()
-                      | C.Phones.Where(T => T.Number.ToLower().Contains(pattern)).Any()
-                      select C).GroupBy(t => t.Nombre[0]).ToList();
+        // Consulta.
+        RenderList = (from contacto in Contactos
+                      where contacto.Nombre.Contains(pattern, StringComparison.CurrentCultureIgnoreCase)
+                      || contacto.Mails.Where(T => T.Email.ToLower().Contains(pattern)).Any()
+                      || contacto.Phones.Where(T => T.Number.ToLower().Contains(pattern)).Any()
+                      select contacto).GroupBy(t => t.Nombre[0]).ToList();
 
-
+        // Nuevo estado.
         StateHasChanged();
-
 
     }
 
 
 
     /// <summary>
-    /// Informacion de desarrollador
+    /// Ir a una ruta.
     /// </summary>
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    /// <param name="url">Ruta.</param>
+    public void GoTo(string url) => nav.NavigateTo(url);
+
+
+
+    /// <summary>
+    /// Abrir drawer de crear.
+    /// </summary>
+    private async Task OpenCreate()
     {
 
-        if (firstRender)
-        {
-            //  await Access.Developer.Session.LoginWith(LIN.Access.Contacts.Session.Instance.Informacion.ID);
-            StateHasChanged();
-        }
-
-        await base.OnAfterRenderAsync(firstRender);
-
-    }
-
-
-
-
-    public void GoTo(string url)
-    {
-        //nav.NavigateTo(url);
-    }
-
-
-    private void GoToTrans()
-    {
-        //nav.NavigateTo("/transacciones");
-    }
-
-
-
-
-
-
-
-
-
-    private async Task A()
-    {
-
+        // JS.
         await JSRuntime.InvokeAsync<object>("ShowDrawer", "drawerProject", "btnClose", "btnClose1");
 
+        // Nuevo estado.
         StateHasChanged();
 
     }
 
-
-    private async Task A2()
-    {
-
-        await JSRuntime.InvokeAsync<object>("ShowDrawer", "drawerSync", "btnSyncClose");
-
-        StateHasChanged();
-
-    }
 
 
 
     /// <summary>
-    /// Metodo de inicio
+    /// Método de inicio
     /// </summary>
     protected override async Task OnInitializedAsync()
     {
@@ -123,11 +153,10 @@ public partial class Index
 
         AreProjectLoaded = false;
 
-        // Obtiene los dispositivos
+        // Obtiene los contactos.
         var result = await Access.Contacts.Controllers.Contacts.ReadAll(Access.Contacts.Session.Instance.Token);
 
-
-        // Evalua el resultado
+        // Evalúa el resultado
         if (result.Response == Responses.Success)
         {
             AreProjectLoaded = true;
@@ -139,62 +168,20 @@ public partial class Index
     }
 
 
-    public void GoToSupport()
-    {
-        // nav.NavigateTo("/contactos");
-    }
 
 
-    string Saludo(string name)
-    {
-
-        DateTime horaActual = DateTime.Now;
-
-        int hora = horaActual.Hour;
-
-        if (hora >= 6 && hora < 12)
-            return $"Buenos dias {name}";
-
-        else if (hora >= 12 && hora < 18)
-            return $"Buenos tardes {name}";
-
-        else if (hora >= 18 && hora < 24)
-            return $"Buenos noches {name}";
-
-        else
-            return $"Primero que el sol, Hola {name}";
-
-    }
-
-
-
-
-    async void OnSucces()
+    /// <summary>
+    /// Al crear correctamente un contacto.
+    /// </summary>
+    async void OnSuccess()
     {
 
         // Vuelve a cargar las llaves
         await LoadProjects();
 
-        // Regresca la UI
         StateHasChanged();
 
     }
-
-
-
-    private async Task OpenDrawer()
-    {
-
-        await JSRuntime.InvokeAsync<object>("ShowDrawer", "drawerProject", "btnClose", "btnClose1");
-
-        StateHasChanged();
-
-    }
-
-
-
-
-
 
 
 }
