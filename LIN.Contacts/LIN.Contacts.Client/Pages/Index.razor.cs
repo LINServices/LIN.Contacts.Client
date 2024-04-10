@@ -16,7 +16,7 @@ public partial class Index
         Console.WriteLine(Pattern);
 
 
-        if(Pattern.Trim().Length < 0)
+        if (Pattern.Trim().Length < 0)
         {
             RenderList = Contactos.GroupBy(t => t.Nombre[0]).ToList();
             StateHasChanged();
@@ -33,7 +33,7 @@ public partial class Index
                       select C).GroupBy(t => t.Nombre[0]).ToList();
 
 
-        StateHasChanged() ;
+        StateHasChanged();
 
 
     }
@@ -141,7 +141,7 @@ public partial class Index
 
     public void GoToSupport()
     {
-       // nav.NavigateTo("/contactos");
+        // nav.NavigateTo("/contactos");
     }
 
 
