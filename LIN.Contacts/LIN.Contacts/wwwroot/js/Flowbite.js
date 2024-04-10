@@ -13,7 +13,7 @@ function ShowDrawer(id, ...idCloseBtn)
     const closeButton = document.getElementById(idCloseBtn);
 
     const options = {
-        backdropClasses: 'bg-zinc-900 bg-opacity-20 fixed inset-0 z-30'
+        backdropClasses: 'bg-zinc-900/20 dark:bg-black/80 fixed inset-0 z-30'
     };
 
     const drawer = new Drawer(control, options);
@@ -109,7 +109,7 @@ function ShowModal(id, ...idCloseBtn) {
         placement: 'center',
         backdrop: 'dynamic',
         backdropClasses:
-            'bg-zinc-900/50 dark:bg-black/80 fixed inset-0 z-40',
+            'bg-zinc-900/40 dark:bg-black/80 fixed inset-0 z-40',
         closable: true,
         onHide: () => {
             console.log('modal is hidden');
