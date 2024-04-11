@@ -13,7 +13,3 @@ Antes de utilizar (Dev) LIN Contacts, asegúrate de tener:
 
 - Visual Studio
 - Dependencias
-
-## Licencia
-
-LIN Contacts utiliza la Licencia MIT.
