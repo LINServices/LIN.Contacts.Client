@@ -143,4 +143,6 @@
 <DrawerProject OnSuccessCreate="OnSuccess" />
 
 @* Contacto *@
-<ContactModal @ref="ModalContactos" />
+<ContactModal @ref="ModalContactos" OnEdit="OnEdit" />
+
+<ContactEdit @ref=ContactEditDrawer OnSuccess="()=>InvokeAsync(StateHasChanged)"></ContactEdit>

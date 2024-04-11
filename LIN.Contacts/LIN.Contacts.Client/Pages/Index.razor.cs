@@ -13,6 +13,11 @@ public partial class Index
     private EmmaDrawer? EmmaIA { get; set; }
 
 
+    /// <summary>
+    /// Editor
+    /// </summary>
+    private ContactEdit? ContactEditDrawer { get; set; }
+
 
     /// <summary>
     /// Patron de búsqueda.
@@ -181,6 +186,18 @@ public partial class Index
 
         StateHasChanged();
 
+    }
+
+
+
+
+    /// <summary>
+    /// Al crear correctamente un contacto.
+    /// </summary>
+    async void OnEdit(ContactModel model)
+    {
+
+        ContactEditDrawer?.Show(model);
     }
 
 

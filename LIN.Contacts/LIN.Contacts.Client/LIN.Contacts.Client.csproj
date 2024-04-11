@@ -25,4 +25,10 @@
     <ProjectReference Include="..\..\..\..\Tipos\LIN.Types\LIN.Types.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Components\ContactEdit.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
+
 </Project>
