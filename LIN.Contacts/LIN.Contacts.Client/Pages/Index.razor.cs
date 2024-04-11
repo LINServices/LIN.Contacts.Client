@@ -14,6 +14,12 @@ public partial class Index
 
 
     /// <summary>
+    /// Nuevo contacto.
+    /// </summary>
+    private ContactDrawer? NewContact { get; set; }
+
+
+    /// <summary>
     /// Editor
     /// </summary>
     private ContactEdit? ContactEditDrawer { get; set; }
@@ -66,7 +72,7 @@ public partial class Index
     /// Abrir Emma.
     /// </summary>
     private void OpenEmma() => EmmaIA?.Show();
-  
+
 
 
     /// <summary>
@@ -120,17 +126,7 @@ public partial class Index
     /// <summary>
     /// Abrir drawer de crear.
     /// </summary>
-    private async Task OpenCreate()
-    {
-
-        // JS.
-        await JSRuntime.InvokeAsync<object>("ShowDrawer", "drawerProject", "btnClose", "btnClose1");
-
-        // Nuevo estado.
-        StateHasChanged();
-
-    }
-
+    private void OpenCreate() => NewContact?.Show();
 
 
 

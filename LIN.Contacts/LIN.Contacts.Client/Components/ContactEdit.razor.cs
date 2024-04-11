@@ -59,7 +59,7 @@ public partial class ContactEdit
 
 
     /// <summary>
-    /// Abrir drawer de crear.
+    /// Abrir drawer de editar.
     /// </summary>
     public async Task Show(ContactModel model)
     {
