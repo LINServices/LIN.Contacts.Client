@@ -44,7 +44,7 @@ public partial class EmmaDrawer
         base.OnAfterRender(firstRender);
         if (firstRender)
         {
-            LIN.Emma.UI.Functions.LoadActions(Scripts.Actions);
+            //LIN.Emma.UI.Functions.LoadActions(Scripts.Actions);
             DocEmma.OnPromptRequire += DocEmma_OnPromptRequire;
         }
 

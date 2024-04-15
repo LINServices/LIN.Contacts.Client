@@ -7,6 +7,12 @@ namespace LIN.Contacts.Client.Pages;
 public partial class Index
 {
 
+
+
+
+
+
+
     /// <summary>
     /// Emma.
     /// </summary>
@@ -170,6 +176,25 @@ public partial class Index
 
 
 
+    public void Add(ContactModel model)
+    {
+        this.InvokeAsync(() =>
+        {
+
+            var exist = Contactos.Where(t => t.Id == model.Id).Any();
+
+            if (exist)
+                return;
+
+            Contactos.Add(model);
+            RenderList = Contactos.GroupBy(t => t.Nombre[0].ToString().ToUpper()[0]).ToList();
+            StateHasChanged();
+        });
+    }
+
+
+
+
 
     /// <summary>
     /// Al crear correctamente un contacto.
@@ -196,5 +221,17 @@ public partial class Index
         ContactEditDrawer?.Show(model);
     }
 
+
+
+   public void Refresh()
+    {
+        this.InvokeAsync(()=>
+        {
+
+            RenderList = Contactos.GroupBy(t => t.Nombre[0].ToString().ToUpper()[0]).ToList();
+            StateHasChanged();
+
+        });
+    }
 
 }

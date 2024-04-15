@@ -14,5 +14,7 @@ LIN.Access.Auth.Build.Init();
 LIN.Access.Search.Build.Init();
 LIN.Access.Contacts.Build.Init();
 
+LIN.Contacts.Client.Online.Realtime.Build();
+
 
 await builder.Build().RunAsync();

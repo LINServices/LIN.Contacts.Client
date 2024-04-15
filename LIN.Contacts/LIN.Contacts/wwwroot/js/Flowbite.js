@@ -278,9 +278,15 @@ function I() {
 
 
 function enviarCorreo(mail) {
-    var destinatario = "destinatario@example.com";
-
     var mailtoURL = "mailto:" + mail;
+
+    // Abrir el cliente de correo predeterminado del usuario
+    window.location.href = mailtoURL;
+}
+
+
+function llamar(phone) {
+    var mailtoURL = "tel:" + phone;
 
     // Abrir el cliente de correo predeterminado del usuario
     window.location.href = mailtoURL;

@@ -205,6 +205,8 @@ public partial class Login
             // Correcto.
             case Responses.Success:
 
+                Online.Realtime.Start();
+
                 // Navegar.
                 NavigationManager?.NavigateTo("/");
                 return;
@@ -348,6 +350,8 @@ public partial class Login
 
             // Correcto.
             case Responses.Success:
+                Online.Realtime.Start();
+
                 NavigationManager?.NavigateTo("/");
                 return;
 
