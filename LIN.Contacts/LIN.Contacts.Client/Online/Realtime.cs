@@ -55,8 +55,10 @@ internal class Realtime
         // Generar nuevo hub.
         InventoryAccessHub = new(Session.Instance.Token, new()
         {
-            Name = DeviceName,
-            LocalId = DeviceKey
+            Name = "Navegador Web",
+            LocalId = DeviceKey,
+           
+            Platform = "Web"
         });
 
         // Evento.
@@ -199,8 +201,58 @@ internal class Realtime
 
 
 
+
+        SILFFunction viewContact = new(async (values) =>
+        {
+
+            // Obtener el parámetro.
+            var value = values.FirstOrDefault(t => t.Name == "id")?.Objeto.GetValue();
+
+            // Validar el tipo.
+            if (value is not decimal)
+                return;
+
+            // Id.
+            var id = (int)((value as decimal?) ?? 0);
+
+
+
+            var modelo = Pages.Index.Contactos.Where(t => t.Id == id).FirstOrDefault();
+
+
+            if (modelo == null)
+            {
+                var contact = await LIN.Access.Contacts.Controllers.Contacts.Read(id, Session.Instance.Token);
+
+                if (contact.Response == Responses.Success)
+                    modelo = contact.Model;
+
+            }
+
+            if (modelo == null)
+            {
+                return;
+            }
+
+
+
+            Pages.Index.ModalContactos.Show(modelo);
+
+
+        })
+        // Propiedades
+        {
+            Name = "viewContact",
+            Parameters =
+         [
+             new("id", new("number")),
+            ]
+        };
+
+
+
         // Guardar métodos.
-        Actions = [addContact, removeContact, updateContact];
+        Actions = [addContact, removeContact, updateContact, viewContact];
 
     }
 

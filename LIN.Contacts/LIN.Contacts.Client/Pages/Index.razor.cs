@@ -1,5 +1,8 @@
-﻿using LIN.Contacts.Client.Components;
+﻿using Global.Http;
+using LIN.Contacts.Client.Components;
 using LIN.Contacts.Client.Modales;
+using LIN.Contacts.Client.Online;
+using LIN.Types.Contacts.Transient;
 
 namespace LIN.Contacts.Client.Pages;
 
@@ -8,7 +11,7 @@ public partial class Index
 {
 
 
-
+    private DevicesDrawer Devices;
 
 
 
@@ -233,5 +236,28 @@ public partial class Index
 
         });
     }
+
+
+   
+
+    void OnSend(ContactModel contact)
+    {
+
+        // Nuevo onInvoque.
+        Devices.OnInvoke = (e) =>
+        {
+            Realtime.InventoryAccessHub.SendToDevice(e.Id, new()
+            {
+                Command = $"viewContact({contact.Id})"
+            });
+        };
+
+        Devices.Show();
+    }
+
+
+
+
+
 
 }

@@ -47,6 +47,51 @@ function ShowDrawer(id, ...idCloseBtn)
 
 
 
+// Abre un Drawer
+function ShowBottomDrawer(id, ...idCloseBtn) {
+
+    // Control
+    const control = document.getElementById(id);
+
+    const options = {
+        placement: "bottom",
+        backdropClasses: 'bg-zinc-900 bg-opacity-50 fixed inset-0 z-30',
+        onHide: () => {
+        },
+        onShow: () => {
+        }
+    };
+
+
+    const drawer = new Drawer(control, options);
+
+    drawer.show();
+
+    for (let i = 0; i < idCloseBtn.length; i++) {
+
+        try {
+
+            let closeButton = document.getElementById(idCloseBtn[i]);
+
+            closeButton.addEventListener("click", () => {
+
+                drawer.hide();
+
+            });
+        } catch {
+
+        }
+
+    }
+
+}
+
+
+
+
+
+
+
 
 // Abre
 function ForceClick(id)

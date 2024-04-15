@@ -143,7 +143,10 @@
 <ContactDrawer @ref="NewContact" OnSuccessCreate="OnSuccess" />
 
 @* Contacto *@
-<ContactModal @ref="ModalContactos" OnEdit="OnEdit" />
+<ContactModal @ref="ModalContactos" OnEdit="OnEdit" OnSend="OnSend" />
 
 @* Editor *@
 <ContactEdit @ref=ContactEditDrawer OnSuccess="()=>InvokeAsync(StateHasChanged)"></ContactEdit>
+
+
+<DevicesDrawer @ref="Devices"></DevicesDrawer>

@@ -13,6 +13,14 @@ public partial class ContactModal
 
 
     /// <summary>
+    /// Acción al presionar sobre el botón de editar.
+    /// </summary>
+    [Parameter]
+    public Action<ContactModel> OnSend { get; set; } = (e) => { };
+
+
+
+    /// <summary>
     /// Modal de eliminar.
     /// </summary>
     private AskDelete? DeleteModal { get; set; }
@@ -38,9 +46,25 @@ public partial class ContactModal
     /// </summary>
     public void Show()
     {
-        StateHasChanged();
+       
+        _ = this.InvokeAsync(() =>
+        { StateHasChanged();
+            Js.InvokeVoidAsync("ShowModal", $"modal-{Key}", $"btn-{Key}", "close-btn-edit", $"close-btn-send-{Key}");
+        });
+
+    }
+
+
+    /// <summary>
+    /// Abrir el modal.
+    /// </summary>
+    public void Show(ContactModel model)
+    {
+        
         _ = this.InvokeAsync(() =>
         {
+            Modelo = model;
+            StateHasChanged();
             Js.InvokeVoidAsync("ShowModal", $"modal-{Key}", $"btn-{Key}", "close-btn-edit");
         });
 
