@@ -39,15 +39,19 @@ public partial class DeviceControl
     {
 
         // Segun.
-        switch (Model?.Platform)
+        switch (Model?.Platform.ToLower().Trim())
         {
             // Android.
-            case "Android":
+            case "android":
                 return "./img/android.png";
 
             // Windows
-            case "Windows":
+            case "windows":
                 return "./img/windows.png";
+
+            // Windows
+            case "web":
+                return "./img/web.png";
 
         }
         return "";

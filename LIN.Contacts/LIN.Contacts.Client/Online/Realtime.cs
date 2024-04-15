@@ -57,7 +57,6 @@ internal class Realtime
         {
             Name = "Navegador Web",
             LocalId = DeviceKey,
-           
             Platform = "Web"
         });
 
