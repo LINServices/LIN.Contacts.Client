@@ -37,13 +37,6 @@
 }
 
 
-a[href*="http://somee.com"] {
-    visibility: hidden;
-    display: none;
-}
-
-
-
 
 body {
     font-family: 'Gilroy' !important;

@@ -1,8 +1,6 @@
-﻿using Global.Http;
-using LIN.Contacts.Client.Components;
+﻿using LIN.Contacts.Client.Components;
 using LIN.Contacts.Client.Modales;
 using LIN.Contacts.Client.Online;
-using LIN.Types.Contacts.Transient;
 
 namespace LIN.Contacts.Client.Pages;
 
@@ -147,7 +145,7 @@ public partial class Index
 
         // Obtiene los proyectos
         if (!AreProjectLoaded)
-            await LoadProjects();
+            await LoadContacts();
 
         // base
         await base.OnInitializedAsync();
@@ -158,7 +156,7 @@ public partial class Index
     /// <summary>
     /// Carga la lista de proyectos
     /// </summary>
-    public async Task LoadProjects()
+    public async Task LoadContacts()
     {
 
         AreProjectLoaded = false;
@@ -206,7 +204,7 @@ public partial class Index
     {
 
         // Vuelve a cargar las llaves
-        await LoadProjects();
+        await LoadContacts();
 
         StateHasChanged();
 
@@ -226,9 +224,9 @@ public partial class Index
 
 
 
-   public void Refresh()
+    public void Refresh()
     {
-        this.InvokeAsync(()=>
+        this.InvokeAsync(() =>
         {
 
             RenderList = Contactos.GroupBy(t => t.Nombre[0].ToString().ToUpper()[0]).ToList();
@@ -238,7 +236,7 @@ public partial class Index
     }
 
 
-   
+
 
     void OnSend(ContactModel contact)
     {

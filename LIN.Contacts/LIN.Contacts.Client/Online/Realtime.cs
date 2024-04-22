@@ -1,5 +1,4 @@
-﻿
-using LIN.Types.Contacts.Transient;
+﻿using LIN.Types.Contacts.Transient;
 using SILF.Script.Interfaces;
 
 namespace LIN.Contacts.Client.Online;

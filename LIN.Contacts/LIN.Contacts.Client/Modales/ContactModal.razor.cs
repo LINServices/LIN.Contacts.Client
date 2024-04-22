@@ -46,9 +46,10 @@ public partial class ContactModal
     /// </summary>
     public void Show()
     {
-       
+
         _ = this.InvokeAsync(() =>
-        { StateHasChanged();
+        {
+            StateHasChanged();
             Js.InvokeVoidAsync("ShowModal", $"modal-{Key}", $"btn-{Key}", "close-btn-edit", $"close-btn-send-{Key}");
         });
 
@@ -60,7 +61,7 @@ public partial class ContactModal
     /// </summary>
     public void Show(ContactModel model)
     {
-        
+
         _ = this.InvokeAsync(() =>
         {
             Modelo = model;
