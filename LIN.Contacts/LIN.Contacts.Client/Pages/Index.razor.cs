@@ -256,6 +256,22 @@ public partial class Index
 
 
 
+    void Filter(Types.Contacts.Enumerations.ContactTypes type)
+    {
+
+        if (type == Types.Contacts.Enumerations.ContactTypes.None)
+        {
+            Refresh();
+            return;
+        }
+
+
+        RenderList = Contactos.Where(t => t.Type == type).GroupBy(t => t.Nombre[0].ToString().ToUpper()[0]).ToList();
+        StateHasChanged();
+    }
+
+
+
 
 
 }
