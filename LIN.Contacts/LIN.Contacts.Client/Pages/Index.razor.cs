@@ -1,6 +1,7 @@
-﻿using LIN.Contacts.Client.Components;
-using LIN.Contacts.Client.Modales;
+﻿
 using LIN.Contacts.Client.Online;
+using LIN.Contacts.Shared.Drawers;
+using LIN.Contacts.Shared.Modals;
 
 namespace LIN.Contacts.Client.Pages;
 
@@ -244,7 +245,8 @@ public partial class Index
         // Nuevo onInvoque.
         Devices.OnInvoke = (e) =>
         {
-            Realtime.InventoryAccessHub.SendToDevice(e.Id, new()
+
+            LIN.Contacts.Shared.Online.Realtime.InventoryAccessHub.SendToDevice(e.Id, new()
             {
                 Command = $"viewContact({contact.Id})"
             });

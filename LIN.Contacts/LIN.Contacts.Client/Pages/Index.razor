@@ -123,7 +123,7 @@
             @if (!AreProjectLoaded)
             {
                 <div class="flex h-9 w-full items-center justify-center rounded-lg">
-                    <CircleLoader />
+                    <LIN.Contacts.Shared.Components.CircleLoader />
                 </div>
             }
 
@@ -144,7 +144,7 @@
                         <div class="mt-2">
                             @foreach (var e in group)
                             {
-                                <ContactComponent Modelo="e"></ContactComponent>
+                                <LIN.Contacts.Shared.Components.ContactComponent Modelo="e" OnClick="(mm)=>Pages.Index.ModalContactos?.Show(mm)"></LIN.Contacts.Shared.Components.ContactComponent>
                             }
                         </div>
                     </div>
@@ -165,7 +165,7 @@
 <ContactDrawer @ref="NewContact" OnSuccessCreate="OnSuccess" />
 
 @* Contacto *@
-<ContactModal @ref="ModalContactos" OnEdit="OnEdit" OnSend="OnSend" />
+<LIN.Contacts.Shared.Modals.ContactModal @ref="ModalContactos" OnEdit="OnEdit" OnSend="OnSend" />
 
 @* Editor *@
 <ContactEdit @ref=ContactEditDrawer OnSuccess="()=>InvokeAsync(StateHasChanged)"></ContactEdit>
