@@ -1,4 +1,6 @@
 using LIN.Contacts.Components;
+using LIN.Access.Auth;
+using LIN.Access.Contacts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,8 +23,8 @@ else
 
 app.UseHttpsRedirection();
 
-LIN.Access.Auth.Build.Init();
-LIN.Access.Contacts.Build.Init();
+builder.Services.AddAuthenticationService();
+builder.Services.AddContactsService();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
