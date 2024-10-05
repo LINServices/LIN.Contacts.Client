@@ -11,9 +11,7 @@ module.exports = {
             '2xl': '1536px',
         },
         extend: {
-
             colors: {
-
                 'current': {
                     '50': '#f3faf9',
                     '100': '#d6f1ea',
@@ -27,8 +25,8 @@ module.exports = {
                     '900': '#1f423d',
                     '950': '#0d2625'
                 }
-            }        },
-  },
+            }
+        },
+    },
     plugins: []
 }
-
