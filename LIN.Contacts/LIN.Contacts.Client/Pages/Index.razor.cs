@@ -1,6 +1,4 @@
-﻿
-using LIN.Contacts.Client.Online;
-using LIN.Contacts.Shared.Drawers;
+﻿using LIN.Contacts.Shared.Drawers;
 using LIN.Contacts.Shared.Modals;
 
 namespace LIN.Contacts.Client.Pages;
@@ -11,9 +9,6 @@ public partial class Index
 
 
     private DevicesDrawer Devices;
-
-
-
 
     /// <summary>
     /// Emma.
@@ -201,7 +196,7 @@ public partial class Index
     /// <summary>
     /// Al crear correctamente un contacto.
     /// </summary>
-    async void OnSuccess()
+    private async void OnSuccess()
     {
 
         // Vuelve a cargar las llaves
@@ -217,7 +212,7 @@ public partial class Index
     /// <summary>
     /// Al crear correctamente un contacto.
     /// </summary>
-    async void OnEdit(ContactModel model)
+    private async void OnEdit(ContactModel model)
     {
 
         ContactEditDrawer?.Show(model);
@@ -236,10 +231,7 @@ public partial class Index
         });
     }
 
-
-
-
-    void OnSend(ContactModel contact)
+    private void OnSend(ContactModel contact)
     {
 
         // Nuevo onInvoque.
@@ -255,10 +247,7 @@ public partial class Index
         Devices.Show();
     }
 
-
-
-
-    void Filter(Types.Contacts.Enumerations.ContactTypes type)
+    private void Filter(Types.Contacts.Enumerations.ContactTypes type)
     {
 
         if (type == Types.Contacts.Enumerations.ContactTypes.None)

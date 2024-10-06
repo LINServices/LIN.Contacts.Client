@@ -1,8 +1,6 @@
-﻿
-using LIN.Access.Auth.Hubs;
+﻿using LIN.Access.Auth.Hubs;
 
 namespace LIN.Contacts.Client.Pages;
-
 
 public partial class Login
 {

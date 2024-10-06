@@ -1,11 +1,10 @@
 ﻿@page "/logout"
-@inject NavigationManager nav
+@inject NavigationManager NavigationManager
 @rendermode InteractiveWebAssembly
 
-<div class="flex items-center justify-center h-screen">
+<div class="flex h-screen items-center justify-center">
     <CircleLoader />
 </div>
-
 
 @code{
     protected override async void OnAfterRender(bool firstRender)
@@ -15,9 +14,7 @@
         Index.AreProjectLoaded = false;
         Index.Contactos = new();
         await Task.Delay(1000);
-        nav.NavigateTo("/login");
+        NavigationManager.NavigateTo("/login");
         base.OnAfterRender(firstRender);
     }
-
-  
 }
