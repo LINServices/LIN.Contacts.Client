@@ -1,13 +1,11 @@
+global using LIN.Access.Contacts;
 global using LIN.Types.Cloud.Identity.Enumerations;
 global using LIN.Types.Cloud.Identity.Models;
-global using LIN.Types.Enumerations;
-global using LIN.Types.Responses;
-global using Microsoft.JSInterop;
 global using LIN.Types.Contacts.Models;
+global using LIN.Types.Responses;
 global using Microsoft.AspNetCore.Components;
-global using LIN.Access.Contacts;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using LIN.Access.Auth;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 

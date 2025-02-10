@@ -1,6 +1,6 @@
-using LIN.Contacts.Components;
 using LIN.Access.Auth;
 using LIN.Access.Contacts;
+using LIN.Contacts.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
