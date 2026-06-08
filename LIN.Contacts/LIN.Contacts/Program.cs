@@ -26,6 +26,7 @@ app.UseHttpsRedirection();
 builder.Services.AddAuthenticationService();
 builder.Services.AddContactsService();
 
+app.MapStaticAssets();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
