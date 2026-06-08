@@ -107,9 +107,16 @@
 
         @* Perfil de usuario *@
         <div class="flex items-center gap-2.5 border-t border-gray-100 pt-3 dark:border-zinc-700">
-            <div class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-current-100 text-xs font-bold uppercase text-current-700">
-                @Global.Utilities.Strings.GetInitials(LIN.Access.Contacts.Session.Instance.Account.Name ?? "")
-            </div>
+            @if (string.IsNullOrWhiteSpace(LIN.Access.Contacts.Session.Instance.Account.Profile))
+            {
+                <div class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-current-100 text-xs font-bold uppercase text-current-700">
+                    @Global.Utilities.Strings.GetInitials(LIN.Access.Contacts.Session.Instance.Account.Name ?? "")
+                </div>
+            }
+            else
+            {
+                <img class="h-8 w-8 flex-shrink-0 rounded-full object-cover" src="@LIN.Access.Contacts.Session.Instance.Account.Profile" alt="Perfil">
+            }
             <div class="min-w-0 flex-1">
                 <p class="truncate text-sm font-semibold text-gray-900 dark:text-white">@LIN.Access.Contacts.Session.Instance.Account.Name</p>
                 <p class="text-[11px] text-gray-400 dark:text-zinc-500">@(Contactos.Count()) contactos</p>
