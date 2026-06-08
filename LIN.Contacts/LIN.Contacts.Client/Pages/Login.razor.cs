@@ -1,15 +1,21 @@
 ﻿using LIN.Access.Auth.Hubs;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
 
 namespace LIN.Contacts.Client.Pages;
 
 public partial class Login
 {
 
-    /// <summary>
-    /// Navegación.
-    /// </summary>
     [Inject]
     private NavigationManager? NavigationManager { get; set; }
+
+    [Inject]
+    private IJSRuntime? JSRuntime { get; set; }
+
+    private ElementReference userInput;
+    private ElementReference passwordInput;
 
 
     /// <summary>
@@ -118,13 +124,29 @@ public partial class Login
 
 
 
-    /// <summary>
-    /// Oculta los errores
-    /// </summary>
     private void HideError()
     {
         ErrorVisible = false;
         StateHasChanged();
+    }
+
+    private async Task HandleUserKeyDown(KeyboardEventArgs e)
+    {
+        HideError();
+        if (e.Key == "Enter")
+        {
+            if (IsWithKey)
+                Start();
+            else if (JSRuntime is not null)
+                await JSRuntime.InvokeVoidAsync("eval", "document.activeElement.blur()").ConfigureAwait(false);
+        }
+    }
+
+    private async Task HandlePasswordKeyDown(KeyboardEventArgs e)
+    {
+        HideError();
+        if (e.Key == "Enter")
+            await Task.Run(Start);
     }
 
 

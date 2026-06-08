@@ -186,7 +186,7 @@ internal class Realtime
 
 
 
-            Pages.Index.ModalContactos.Show(modelo);
+            Pages.Index.Me?.SelectContact(modelo);
 
 
         })

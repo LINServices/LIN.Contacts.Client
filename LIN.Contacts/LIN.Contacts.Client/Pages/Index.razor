@@ -1,11 +1,10 @@
-﻿@page "/"
+@page "/"
 
-<!-- Dependencias -->
 @inject IJSRuntime JSRuntime
 @inject NavigationManager nav
 @rendermode InteractiveWebAssembly
 
-@* No hay sesión activa *@
+@* Sin sesión activa *@
 @if (!Access.Contacts.Session.IsOpen)
 {
     <div class="flex h-screen w-full items-center justify-center">
@@ -23,145 +22,288 @@
     Me = this;
 }
 
+<div class="flex h-screen w-full overflow-hidden bg-[#f2f1f6] dark:bg-zinc-900">
 
-<div class="flex w-full justify-center">
+    @* ===== OVERLAY SIDEBAR (móvil/tablet) ===== *@
+    @if (ShowSidebar)
+    {
+        <div class="fixed inset-0 z-20 bg-black/30 lg:hidden" @onclick="ToggleSidebar"></div>
+    }
 
-    <div class="w-full max-w-4xl">
+    @* ===== SIDEBAR ===== *@
+    <aside class="fixed inset-y-0 left-0 z-30 flex w-64 flex-shrink-0 flex-col border-r border-gray-100 bg-white p-3 transition-transform duration-300 dark:border-zinc-700 dark:bg-zinc-800 lg:static lg:z-auto lg:w-60 lg:translate-x-0 @(ShowSidebar ? "translate-x-0" : "-translate-x-full")">
+
+        @* Marca *@
+        <div class="mb-5 flex items-center gap-2.5 px-1 pt-2">
+            <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-white shadow dark:bg-zinc-700">
+                <img class="h-4 w-4 fill-white" src="./favicon.png" />
+            </div>
+            <span class="text-base font-bold text-gray-900 dark:text-white">LIN Contacts</span>
+        </div>
+
+        @* Búsqueda *@
+        <div class="mb-4 flex h-9 items-center rounded-xl bg-[#f2f1f6] px-3 dark:bg-zinc-700">
+            <svg class="mr-2 h-3.5 w-3.5 flex-shrink-0 fill-gray-400 dark:fill-zinc-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" /></svg>
+            <input @oninput="Search" class="w-full bg-transparent text-sm text-gray-700 placeholder-gray-400 focus:outline-none dark:text-zinc-200 dark:placeholder-zinc-500" type="text" placeholder="Buscar...">
+        </div>
+
+        @* Navegación *@
+        <nav class="flex flex-col gap-0.5">
+
+            <button @onclick='()=>FilterAndClose(Types.Contacts.Enumerations.ContactTypes.None)'
+                    class="flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-sm font-medium transition-colors @(ActiveFilter == Types.Contacts.Enumerations.ContactTypes.None ? "bg-current-50 text-current-600 dark:bg-current-900/30 dark:text-current-400" : "text-gray-600 hover:bg-gray-50 dark:text-zinc-400 dark:hover:bg-zinc-700")">
+                <svg class="h-4 w-4 @(ActiveFilter == Types.Contacts.Enumerations.ContactTypes.None ? "fill-current-500" : "fill-gray-400 dark:fill-zinc-500")" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3zM609.3 512H471.4c5.4-9.4 8.6-20.3 8.6-32v-8c0-60.7-27.1-115.2-69.8-151.8c2.4-.1 4.7-.2 7.1-.2h61.4C567.8 320 640 392.2 640 481.3c0 17-13.8 30.7-30.7 30.7zM432 256c-31 0-59-12.6-79.3-32.9C372.4 196.5 384 163.6 384 128c0-26.8-6.6-52.1-18.3-74.3C384.3 40.1 407.2 32 432 32c61.9 0 112 50.1 112 112s-50.1 112-112 112z" /></svg>
+                Todas las personas
+            </button>
+
+            <div class="mb-1 mt-3 px-2.5">
+                <p class="font-semibold uppercase tracking-wider text-[10px] text-gray-400 dark:text-zinc-500">Categorías</p>
+            </div>
+
+            <button @onclick='()=>FilterAndClose(Types.Contacts.Enumerations.ContactTypes.Work)'
+                    class="flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-sm font-medium transition-colors @(ActiveFilter == Types.Contacts.Enumerations.ContactTypes.Work ? "bg-current-50 text-current-600 dark:bg-current-900/30 dark:text-current-400" : "text-gray-600 hover:bg-gray-50 dark:text-zinc-400 dark:hover:bg-zinc-700")">
+                <svg class="h-4 w-4 @(ActiveFilter == Types.Contacts.Enumerations.ContactTypes.Work ? "fill-current-500" : "fill-gray-400 dark:fill-zinc-500")" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M184 48H328c4.4 0 8 3.6 8 8V96H176V56c0-4.4 3.6-8 8-8zm-56 8V96H64C28.7 96 0 124.7 0 160v96H192 320 512V160c0-35.3-28.7-64-64-64H384V56c0-30.9-25.1-56-56-56H184c-30.9 0-56 25.1-56 56zM512 288H320v32c0 17.7-14.3 32-32 32H224c-17.7 0-32-14.3-32-32V288H0V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V288z" /></svg>
+                Trabajo
+            </button>
+
+            <button @onclick='()=>FilterAndClose(Types.Contacts.Enumerations.ContactTypes.Study)'
+                    class="flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-sm font-medium transition-colors @(ActiveFilter == Types.Contacts.Enumerations.ContactTypes.Study ? "bg-current-50 text-current-600 dark:bg-current-900/30 dark:text-current-400" : "text-gray-600 hover:bg-gray-50 dark:text-zinc-400 dark:hover:bg-zinc-700")">
+                <svg class="h-4 w-4 @(ActiveFilter == Types.Contacts.Enumerations.ContactTypes.Study ? "fill-current-500" : "fill-gray-400 dark:fill-zinc-500")" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M96 0C43 0 0 43 0 96V416c0 53 43 96 96 96H384h32c17.7 0 32-14.3 32-32s-14.3-32-32-32V384c17.7 0 32-14.3 32-32V32c0-17.7-14.3-32-32-32H384 96zm0 384H352v64H96c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16zm16 48H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16s7.2-16 16-16z" /></svg>
+                Estudio
+            </button>
+
+            <button @onclick='()=>FilterAndClose(Types.Contacts.Enumerations.ContactTypes.Friend)'
+                    class="flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-sm font-medium transition-colors @(ActiveFilter == Types.Contacts.Enumerations.ContactTypes.Friend ? "bg-current-50 text-current-600 dark:bg-current-900/30 dark:text-current-400" : "text-gray-600 hover:bg-gray-50 dark:text-zinc-400 dark:hover:bg-zinc-700")">
+                <svg class="h-4 w-4 @(ActiveFilter == Types.Contacts.Enumerations.ContactTypes.Friend ? "fill-current-500" : "fill-gray-400 dark:fill-zinc-500")" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M225.8 468.2l-2.5-2.3L48.1 303.2C17.4 274.7 0 234.7 0 192.8v-3.3c0-70.4 50-130.8 119.2-144C158.6 37.9 198.9 47 231 69.6c9 6.4 17.4 13.8 25 22.3c4.2-4.8 8.7-9.2 13.5-13.3c3.7-3.2 7.5-6.2 11.5-9c0 0 0 0 0 0C313.1 47 353.4 37.9 392.8 45.4C462 58.6 512 119.1 512 189.5v3.3c0 41.9-17.4 81.9-48.1 110.4L288.7 465.9l-2.5 2.3c-8.2 7.6-19 11.8-30.2 11.8s-22-4.2-30.2-11.8z" /></svg>
+                Amigos
+            </button>
+
+            <button @onclick='()=>FilterAndClose(Types.Contacts.Enumerations.ContactTypes.Provider)'
+                    class="flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-sm font-medium transition-colors @(ActiveFilter == Types.Contacts.Enumerations.ContactTypes.Provider ? "bg-current-50 text-current-600 dark:bg-current-900/30 dark:text-current-400" : "text-gray-600 hover:bg-gray-50 dark:text-zinc-400 dark:hover:bg-zinc-700")">
+                <svg class="h-4 w-4 @(ActiveFilter == Types.Contacts.Enumerations.ContactTypes.Provider ? "fill-current-500" : "fill-gray-400 dark:fill-zinc-500")" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M547.6 103.8L490.3 13.1C485.2 5 476.1 0 466.4 0H109.6C99.9 0 90.8 5 85.7 13.1L28.3 103.8c-29.6 46.8-3.4 111.9 51.9 119.4c4 .5 8.1 .8 12.1 .8c26.1 0 49.3-11.4 65.2-29c15.9 17.6 39.1 29 65.2 29c26.1 0 49.3-11.4 65.2-29c15.9 17.6 39.1 29 65.2 29c26.2 0 49.3-11.4 65.2-29c16 17.6 39.1 29 65.2 29c4.1 0 8.1-.3 12.1-.8c55.5-7.4 81.8-72.5 52.1-119.4zM499.7 254.9l-.1 0c-5.3 .7-10.7 1.1-16.2 1.1c-12.4 0-24.3-1.9-35.4-5.3V384H128V250.6c-11.2 3.5-23.2 5.4-35.6 5.4c-5.5 0-11-.4-16.3-1.1l-.1 0c-4.1-.6-8.1-1.3-12-2.3V384v64c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V384 252.6c-4 1-8 1.8-12.3 2.3z" /></svg>
+                Proveedores
+            </button>
+
+            <button @onclick='()=>FilterAndClose(Types.Contacts.Enumerations.ContactTypes.Family)'
+                    class="flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-sm font-medium transition-colors @(ActiveFilter == Types.Contacts.Enumerations.ContactTypes.Family ? "bg-current-50 text-current-600 dark:bg-current-900/30 dark:text-current-400" : "text-gray-600 hover:bg-gray-50 dark:text-zinc-400 dark:hover:bg-zinc-700")">
+                <svg class="h-4 w-4 @(ActiveFilter == Types.Contacts.Enumerations.ContactTypes.Family ? "fill-current-500" : "fill-gray-400 dark:fill-zinc-500")" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z" /></svg>
+                Familia
+            </button>
+
+        </nav>
+
+        @* Espaciador *@
+        <div class="flex-1"></div>
+
+        @* Emma IA *@
+        <button @onclick="OpenEmma" class="mb-2 flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50 dark:text-zinc-400 dark:hover:bg-zinc-700">
+            <svg class="h-4 w-4 fill-gray-400 dark:fill-zinc-500" xmlns="http://www.w3.org/2000/svg" version="1.0" viewBox="0 0 256 256" preserveAspectRatio="xMidYMid meet">
+                <g transform="translate(0,256) scale(0.1,-0.1)" stroke="none">
+                    <path d="M1160 2550 c-429 -40 -821 -306 -1015 -690 -98 -195 -137 -361 -137 -580 0 -349 126 -656 371 -901 246 -245 552 -371 901 -371 223 0 407 45 595 145 68 36 83 49 103 87 12 24 22 58 22 75 0 54 -40 117 -90 143 -59 30 -102 25 -205 -27 -288 -143 -623 -133 -900 27 -224 130 -387 349 -452 608 -24 95 -24 333 0 428 65 258 227 478 448 605 506 293 1145 71 1362 -471 55 -135 61 -184 62 -441 l0 -239 -33 -29 c-46 -41 -108 -41 -154 0 l-33 29 -6 229 c-5 167 -11 244 -23 288 -102 365 -462 591 -830 521 -388 -75 -646 -452 -572 -838 20 -102 49 -175 105 -260 222 -338 680 -429 1008 -198 l70 49 42 -43 c167 -170 437 -181 608 -23 58 54 99 113 126 185 20 53 21 74 21 312 -1 278 -13 374 -70 532 -153 426 -516 741 -952 827 -119 23 -259 31 -372 21z" />
+                </g>
+            </svg>
+            Emma IA
+        </button>
+
+        @* Perfil de usuario *@
+        <div class="flex items-center gap-2.5 border-t border-gray-100 pt-3 dark:border-zinc-700">
+            <div class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-current-100 text-xs font-bold uppercase text-current-700">
+                @Global.Utilities.Strings.GetInitials(LIN.Access.Contacts.Session.Instance.Account.Name ?? "")
+            </div>
+            <div class="min-w-0 flex-1">
+                <p class="truncate text-sm font-semibold text-gray-900 dark:text-white">@LIN.Access.Contacts.Session.Instance.Account.Name</p>
+                <p class="text-[11px] text-gray-400 dark:text-zinc-500">@(Contactos.Count()) contactos</p>
+            </div>
+        </div>
+
+    </aside>
+
+
+    @* ===== PANEL CENTRAL (Lista de contactos) ===== *@
+    <div class="@(ShowDetailOnMobile ? "hidden md:flex" : "flex") w-full flex-col border-r border-gray-100 dark:border-zinc-700 md:w-72 md:flex-shrink-0 lg:w-80">
 
         @* Cabecera *@
-        <div class="p-4">
+        <div class="border-b border-gray-100 bg-white px-4 pb-3 pt-4 dark:border-zinc-700 dark:bg-zinc-800">
+            <div class="flex items-center gap-2">
 
-            @* Entradas *@
-            <div class="mt-4 flex items-center">
+                @* Botón hamburger (solo móvil/tablet) *@
+                <button @onclick="ToggleSidebar" class="mr-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl text-gray-500 transition-colors hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-700 lg:hidden">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
 
-                @* Input de búsqueda *@
-                <div class="flex h-10 flex-grow items-center rounded-full bg-[#f2f1f6] px-4 dark:bg-zinc-900 dark:text-zinc-300">
-                    <svg class="mr-2 h-4 w-4 fill-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" /></svg>
-                    <input @oninput="Search" class="w-full bg-transparent focus:outline-none" type="text" placeholder="Buscar contactos, correos o teléfonos">
+                <div class="min-w-0 flex-1">
+                    <p class="font-semibold uppercase tracking-wider text-[11px] text-gray-400 dark:text-zinc-500">@(Contactos.Count()) en total</p>
+                    <h1 class="text-xl font-bold leading-tight text-gray-900 dark:text-white">Contactos</h1>
                 </div>
 
-
-                @* Botones *@
-                <div class="ml-4 flex h-full items-center">
-
-                    @* Botón de nuevo *@
-                    <button @onclick="OpenCreate" class="bg-green-200/30 mr-2 h-10 w-10 rounded-full p-2.5 text-green-500">
-                        <svg class="h-full w-full fill-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" /></svg>
-                    </button>
-
-                    @* Botón de Emma *@
-                    <button @onclick="OpenEmma" class="bg-current-200/30 mr-2 h-10 w-10 rounded-full p-2.5 text-current-500">
-                        <svg class="h-full w-full fill-current-500" xmlns="http://www.w3.org/2000/svg" version="1.0" viewBox="0 0 256.000000 256.000000" preserveAspectRatio="xMidYMid meet">
-                            <g transform="translate(0.000000,256.000000) scale(0.100000,-0.100000)" stroke="none">
-                                <path d="M1160 2550 c-429 -40 -821 -306 -1015 -690 -98 -195 -137 -361 -137 -580 0 -349 126 -656 371 -901 246 -245 552 -371 901 -371 223 0 407 45 595 145 68 36 83 49 103 87 12 24 22 58 22 75 0 54 -40 117 -90 143 -59 30 -102 25 -205 -27 -288 -143 -623 -133 -900 27 -224 130 -387 349 -452 608 -24 95 -24 333 0 428 65 258 227 478 448 605 506 293 1145 71 1362 -471 55 -135 61 -184 62 -441 l0 -239 -33 -29 c-46 -41 -108 -41 -154 0 l-33 29 -6 229 c-5 167 -11 244 -23 288 -102 365 -462 591 -830 521 -388 -75 -646 -452 -572 -838 20 -102 49 -175 105 -260 222 -338 680 -429 1008 -198 l70 49 42 -43 c167 -170 437 -181 608 -23 58 54 99 113 126 185 20 53 21 74 21 312 -1 278 -13 374 -70 532 -153 426 -516 741 -952 827 -119 23 -259 31 -372 21z m292 -918 c79 -38 149 -110 186 -190 24 -50 27 -69 27 -162 0 -93 -3 -112 -27 -162 -37 -80 -107 -152 -187 -191 -61 -30 -72 -32 -171 -32 -93 0 -112 3 -162 27 -80 37 -152 107 -191 187 -30 61 -32 72 -32 171 0 93 3 112 27 162 47 100 137 180 241 214 26 9 76 13 133 11 79 -2 100 -7 156 -35z" />
+                @* Botones de acción *@
+                <div class="flex flex-shrink-0 items-center gap-1.5">
+                    <button @onclick="OpenEmma" class="flex h-8 w-8 items-center justify-center rounded-xl bg-current-50 text-current-500 transition-colors hover:bg-current-100 dark:bg-current-900/30 dark:hover:bg-current-900/50" title="Emma IA">
+                        <svg class="h-4 w-4 fill-current-500" xmlns="http://www.w3.org/2000/svg" version="1.0" viewBox="0 0 256 256" preserveAspectRatio="xMidYMid meet">
+                            <g transform="translate(0,256) scale(0.1,-0.1)" stroke="none">
+                                <path d="M1160 2550 c-429 -40 -821 -306 -1015 -690 -98 -195 -137 -361 -137 -580 0 -349 126 -656 371 -901 246 -245 552 -371 901 -371 223 0 407 45 595 145 68 36 83 49 103 87 12 24 22 58 22 75 0 54 -40 117 -90 143 -59 30 -102 25 -205 -27 -288 -143 -623 -133 -900 27 -224 130 -387 349 -452 608 -24 95 -24 333 0 428 65 258 227 478 448 605 506 293 1145 71 1362 -471 55 -135 61 -184 62 -441 l0 -239 -33 -29 c-46 -41 -108 -41 -154 0 l-33 29 -6 229 c-5 167 -11 244 -23 288 -102 365 -462 591 -830 521 -388 -75 -646 -452 -572 -838 20 -102 49 -175 105 -260 222 -338 680 -429 1008 -198 l70 49 42 -43 c167 -170 437 -181 608 -23 58 54 99 113 126 185 20 53 21 74 21 312 -1 278 -13 374 -70 532 -153 426 -516 741 -952 827 -119 23 -259 31 -372 21z" />
                             </g>
                         </svg>
                     </button>
-
+                    <button @onclick="OpenCreate" class="flex h-8 w-8 items-center justify-center rounded-xl bg-current-500 text-white shadow-sm transition-colors hover:bg-current-600" title="Nuevo contacto">
+                        <svg class="h-3.5 w-3.5 fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" /></svg>
+                    </button>
                 </div>
 
             </div>
-
-
-            @* Perfil *@
-            <div class="mt-5 flex items-center justify-between">
-
-                <div class="flex items-center">
-
-                    @* Imagen del perfil *@
-                    <div class="relative mr-3 inline-flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-gray-100 dark:bg-zinc-800">
-                        <span class="text-xl font-medium text-gray-600 dark:text-gray-300">@Global.Utilities.Strings.GetInitials(LIN.Access.Contacts.Session.Instance.Account.Name ?? "")</span>
-                    </div>
-
-                    @* Nombre y conteo *@
-                    <div>
-                        <h1 class="text-lg font-semibold dark:text-zinc-300">@Session.Instance.Account.Name</h1>
-                        <p class="-mt-1 text-sm text-gray-500 dark:text-zinc-400">@(Contactos.Count()) contactos</p>
-                    </div>
-                </div>
-
-            </div>
-
-
-            @* Recomendaciones *@
-            <div class="mt-5 flex overflow-x-auto">
-                <div class="flex flex-nowrap gap-3">
-
-                    <div @onclick="()=>Filter(Types.Contacts.Enumerations.ContactTypes.None)" class="group flex h-24 w-16 items-center justify-center rounded-lg bg-gradient-to-r from-current-500 to-current-600 hover:from-current-600 hover:to-current-500">
-                        <svg class="h-7 w-7 fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" /></svg>
-                          </div>
-                    
-                    <div @onclick="()=>Filter(Types.Contacts.Enumerations.ContactTypes.Work)" class="group flex h-24 w-16 items-center justify-center rounded-lg bg-gradient-to-r from-current-500 to-current-600 hover:from-current-600 hover:to-current-500">
-                        <svg class="h-7 w-7 fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M184 48H328c4.4 0 8 3.6 8 8V96H176V56c0-4.4 3.6-8 8-8zm-56 8V96H64C28.7 96 0 124.7 0 160v96H192 320 512V160c0-35.3-28.7-64-64-64H384V56c0-30.9-25.1-56-56-56H184c-30.9 0-56 25.1-56 56zM512 288H320v32c0 17.7-14.3 32-32 32H224c-17.7 0-32-14.3-32-32V288H0V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V288z" /></svg>
-                    </div>
-
-                    <div @onclick="()=>Filter(Types.Contacts.Enumerations.ContactTypes.Study)" class="group flex h-24 w-16 items-center justify-center rounded-lg bg-gradient-to-r from-current-500 to-current-600 hover:from-current-600 hover:to-current-500">
-                        <svg class="h-7 w-7 fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M96 0C43 0 0 43 0 96V416c0 53 43 96 96 96H384h32c17.7 0 32-14.3 32-32s-14.3-32-32-32V384c17.7 0 32-14.3 32-32V32c0-17.7-14.3-32-32-32H384 96zm0 384H352v64H96c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16zm16 48H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16s7.2-16 16-16z" /></svg>
-                    </div>
-
-                    <div @onclick="()=>Filter(Types.Contacts.Enumerations.ContactTypes.Friend)" class="group flex h-24 w-16 items-center justify-center rounded-lg bg-gradient-to-r from-current-500 to-current-600 hover:from-current-600 hover:to-current-500">
-                        <svg class="h-7 w-7 fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3zM609.3 512H471.4c5.4-9.4 8.6-20.3 8.6-32v-8c0-60.7-27.1-115.2-69.8-151.8c2.4-.1 4.7-.2 7.1-.2h61.4C567.8 320 640 392.2 640 481.3c0 17-13.8 30.7-30.7 30.7zM432 256c-31 0-59-12.6-79.3-32.9C372.4 196.5 384 163.6 384 128c0-26.8-6.6-52.1-18.3-74.3C384.3 40.1 407.2 32 432 32c61.9 0 112 50.1 112 112s-50.1 112-112 112z" /></svg>
-                    </div>
-
-                    <div @onclick="()=>Filter(Types.Contacts.Enumerations.ContactTypes.Provider)" class="group flex h-24 w-16 items-center justify-center rounded-lg bg-gradient-to-r from-current-500 to-current-600 hover:from-current-600 hover:to-current-500">
-                        <svg class="h-7 w-7 fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M547.6 103.8L490.3 13.1C485.2 5 476.1 0 466.4 0H109.6C99.9 0 90.8 5 85.7 13.1L28.3 103.8c-29.6 46.8-3.4 111.9 51.9 119.4c4 .5 8.1 .8 12.1 .8c26.1 0 49.3-11.4 65.2-29c15.9 17.6 39.1 29 65.2 29c26.1 0 49.3-11.4 65.2-29c15.9 17.6 39.1 29 65.2 29c26.2 0 49.3-11.4 65.2-29c16 17.6 39.1 29 65.2 29c4.1 0 8.1-.3 12.1-.8c55.5-7.4 81.8-72.5 52.1-119.4zM499.7 254.9l-.1 0c-5.3 .7-10.7 1.1-16.2 1.1c-12.4 0-24.3-1.9-35.4-5.3V384H128V250.6c-11.2 3.5-23.2 5.4-35.6 5.4c-5.5 0-11-.4-16.3-1.1l-.1 0c-4.1-.6-8.1-1.3-12-2.3V384v64c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V384 252.6c-4 1-8 1.8-12.3 2.3z" /></svg>
-                    </div>
-
-                    <div @onclick="()=>Filter(Types.Contacts.Enumerations.ContactTypes.Family)" class="group flex h-24 w-16 items-center justify-center rounded-lg bg-gradient-to-r from-current-500 to-current-600 hover:from-current-600 hover:to-current-500">
-                        <svg class="h-7 w-7 fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z" /></svg>
-                    </div>
-
-                </div>
-            </div>
-
         </div>
 
-        @* Contactos *@
-        <div class="px-4">
+        @* Lista scrollable *@
+        <div class="flex-1 overflow-y-auto bg-white px-2 pb-2 dark:bg-zinc-800">
 
-            @* Cargando *@
             @if (!AreProjectLoaded)
             {
-                <div class="flex h-9 w-full items-center justify-center rounded-lg">
-                    <LIN.Contacts.Shared.Components.CircleLoader />
+                <div class="flex h-20 items-center justify-center">
+                    <CircleLoader />
                 </div>
             }
-
-            @* Renderizar contactos *@
+            else if (RenderList.Count <= 0)
+            {
+                <div class="flex h-40 items-center justify-center text-sm text-gray-400 dark:text-zinc-500">Sin contactos</div>
+            }
             else
             {
-
-
-                if (RenderList.Count <= 0)
+                @foreach (var group in RenderList)
                 {
-                    <div class="flex h-40 w-full items-center justify-center rounded-lg bg-zinc-100 dark:bg-zinc-900">
-                        <label class="text-sm text-zinc-800 dark:text-zinc-200">No hay contactos que mostrar</label>
+                    <div class="mb-1">
+                        <p class="px-2 pb-0.5 pt-3 font-semibold uppercase tracking-wider text-[11px] text-gray-400 dark:text-zinc-500">@group.Key</p>
+                        @foreach (var e in group)
+                        {
+                            <LIN.Contacts.Shared.Components.ContactComponent
+                                Modelo="e"
+                                OnClick="SelectContact"
+                                IsSelected="@(SelectedContact?.Id == e.Id)" />
+                        }
                     </div>
-                }
-                else
-                {
-                    @* Mostrar los contactos *@
-                    @foreach (var group in RenderList)
-                    {
-                        <div>
-
-                            @* Clave (Letra) *@
-                            <div class="mt-2 flex items-center justify-between">
-                                <p class="text-sm font-semibold text-gray-800 dark:text-gray-300">@group.Key</p>
-                            </div>
-
-                            <div class="mt-2">
-                                @foreach (var e in group)
-                                {
-                                    <LIN.Contacts.Shared.Components.ContactComponent Modelo="e" OnClick="(mm)=>Pages.Index.ModalContactos?.Show(mm)"></LIN.Contacts.Shared.Components.ContactComponent>
-                                }
-                            </div>
-                        </div>
-                    }
                 }
             }
 
         </div>
+    </div>
+
+
+    @* ===== PANEL DERECHO (Detalle del contacto) ===== *@
+    <div class="@(!ShowDetailOnMobile ? "hidden md:flex" : "flex") flex-1 flex-col overflow-hidden p-3 md:p-4">
+
+        @if (SelectedContact == null)
+        {
+            @* Estado vacío *@
+            <div class="flex h-full flex-col items-center justify-center gap-3">
+                <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm dark:bg-zinc-800">
+                    <svg class="h-7 w-7 fill-gray-300 dark:fill-zinc-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M96 0C60.7 0 32 28.7 32 64V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H96zM208 288h64c44.2 0 80 35.8 80 80c0 8.8-7.2 16-16 16H144c-8.8 0-16-7.2-16-16c0-44.2 35.8-80 80-80zm-32-96a64 64 0 1 1 128 0 64 64 0 1 1 -128 0z" /></svg>
+                </div>
+                <p class="text-sm text-gray-400 dark:text-zinc-500">Selecciona un contacto para ver los detalles</p>
+            </div>
+        }
+        else
+        {
+            @* Detalle del contacto *@
+            <div class="flex h-full flex-col overflow-y-auto rounded-2xl bg-white shadow-sm dark:bg-zinc-800">
+
+                @* Botón volver (solo móvil) *@
+                <div class="flex items-center border-b border-gray-100 px-4 py-3 dark:border-zinc-700 md:hidden">
+                    <button @onclick="GoBack" class="flex items-center gap-1.5 text-sm font-medium text-current-500">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Volver
+                    </button>
+                </div>
+
+                @* Contenido del detalle *@
+                <div class="flex flex-1 flex-col p-5 md:p-6">
+
+                    @* Cabecera: Avatar + Nombre + Botones *@
+                    <div class="mb-5 flex flex-wrap items-start justify-between gap-3">
+
+                        <div class="flex items-center gap-4">
+                            @if (string.IsNullOrWhiteSpace(SelectedContact.Picture))
+                            {
+                                <div class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-gray-200 text-xl font-bold uppercase text-gray-600 dark:bg-zinc-600 dark:text-zinc-200 md:h-16 md:w-16">
+                                    @Global.Utilities.Strings.GetInitials(SelectedContact.Name ?? "")
+                                </div>
+                            }
+                            else
+                            {
+                                <img class="h-14 w-14 flex-shrink-0 rounded-full object-cover md:h-16 md:w-16" src="@SelectedContact.Picture" alt="Avatar">
+                            }
+
+                            <div>
+                                <h2 class="text-lg font-bold text-gray-900 dark:text-white md:text-xl">@SelectedContact.Name</h2>
+                                <span class="mt-1 inline-flex items-center rounded-md bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600 dark:bg-zinc-700 dark:text-zinc-300">
+                                    @GetTypeLabel(SelectedContact.Type)
+                                </span>
+                            </div>
+                        </div>
+
+                        @* Botones de acción *@
+                        <div class="flex items-center gap-2">
+                            <button @onclick="CallSelected" title="Llamar" class="flex h-9 w-9 items-center justify-center rounded-full bg-green-50 text-green-500 transition-colors hover:bg-green-100 dark:bg-green-900/30 dark:hover:bg-green-900/50">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z" /></svg>
+                            </button>
+                            <button @onclick="MailSelected" title="Correo" class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-50 text-blue-500 transition-colors hover:bg-blue-100 dark:bg-blue-900/30 dark:hover:bg-blue-900/50">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 512 512"><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z" /></svg>
+                            </button>
+                            <button @onclick="EditSelected" title="Editar" class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition-colors hover:bg-gray-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16"><path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001" /></svg>
+                            </button>
+                            <button @onclick="()=>OnSend(SelectedContact)" title="Enviar a dispositivo" class="flex h-9 w-9 items-center justify-center rounded-full bg-current-50 text-current-500 transition-colors hover:bg-current-100 dark:bg-current-900/30 dark:hover:bg-current-900/50">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16"><path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M7.5 6.707 6.354 7.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0z" /></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    @* Separador *@
+                    <div class="mb-4 h-px bg-gray-100 dark:bg-zinc-700"></div>
+
+                    @* Tarjetas de información *@
+                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+
+                        @foreach (var phone in SelectedContact.Phones.Where(p => !string.IsNullOrEmpty(p.Number)))
+                        {
+                            <div class="flex items-center gap-3 rounded-xl bg-[#f2f1f6] px-4 py-3 dark:bg-zinc-700">
+                                <svg class="h-4 w-4 flex-shrink-0 fill-gray-400 dark:fill-zinc-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z" /></svg>
+                                <div class="min-w-0">
+                                    <p class="font-medium text-[10px] text-gray-400 dark:text-zinc-500">Teléfono</p>
+                                    <p class="truncate text-sm font-semibold text-gray-900 dark:text-white">@phone.Number</p>
+                                </div>
+                            </div>
+                        }
+
+                        @foreach (var mail in SelectedContact.Mails.Where(m => !string.IsNullOrEmpty(m.Email)))
+                        {
+                            <div class="flex items-center gap-3 rounded-xl bg-[#f2f1f6] px-4 py-3 dark:bg-zinc-700">
+                                <svg class="h-4 w-4 flex-shrink-0 fill-gray-400 dark:fill-zinc-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z" /></svg>
+                                <div class="min-w-0">
+                                    <p class="font-medium text-[10px] text-gray-400 dark:text-zinc-500">Correo</p>
+                                    <p class="truncate text-sm font-semibold text-gray-900 dark:text-white">@mail.Email</p>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+
+                    @* Espaciador *@
+                    <div class="flex-1"></div>
+
+                    @* Eliminar contacto *@
+                    <div class="border-t border-gray-100 pt-4 dark:border-zinc-700">
+                        <button @onclick="OpenDeleteSelected" class="flex items-center gap-1.5 text-sm text-red-400 transition-colors hover:text-red-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M2.037 3.225A.7.7 0 0 1 2 3c0-1.105 2.686-2 6-2s6 .895 6 2a.7.7 0 0 1-.037.225l-1.684 10.104A2 2 0 0 1 10.305 15H5.694a2 2 0 0 1-1.973-1.671zm9.89-.69C10.966 2.214 9.578 2 8 2c-1.58 0-2.968.215-3.926.534-.477.16-.795.327-.975.466.18.14.498.307.975.466C5.032 3.786 6.42 4 8 4s2.967-.215 3.926-.534c.477-.16.795-.327.975-.466-.18-.14-.498-.307-.975-.466z" /></svg>
+                            Eliminar contacto
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        }
 
     </div>
 
@@ -171,14 +313,17 @@
 @* Emma *@
 <EmmaDrawer @ref=EmmaIA />
 
-@* Nuevo *@
+@* Nuevo contacto *@
 <ContactDrawer @ref="NewContact" OnSuccessCreate="OnSuccess" />
 
-@* Contacto *@
-<LIN.Contacts.Shared.Modals.ContactModal @ref="ModalContactos" OnEdit="OnEdit" OnSend="OnSend" />
-
-@* Editor *@
+@* Editor de contacto *@
 <ContactEdit @ref=ContactEditDrawer OnSuccess="()=>InvokeAsync(StateHasChanged)"></ContactEdit>
 
 @* Dispositivos *@
 <DevicesDrawer @ref="Devices"></DevicesDrawer>
+
+@* Confirmar eliminación *@
+<AskDelete @ref="DeleteModal" OnYes="DeleteSelected" OnNot="()=>{}" Message="¿Desea eliminar este contacto?" />
+
+@* Modal de contacto (compatibilidad con hub en tiempo real) *@
+<LIN.Contacts.Shared.Modals.ContactModal @ref="ModalContactos" OnEdit="OnEdit" OnSend="OnSend" />
